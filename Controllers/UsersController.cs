@@ -52,7 +52,7 @@ namespace SwiftServe.Controllers
                     LastName = registrationDto.LastName,
                     UserEmail = registrationDto.Email,
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword(registrationDto.Password),
-                    Role = new Role { RoleName = "User" }, // Changed to single role assignment
+                    Role = new Role { RoleName = "User" }, 
                     Wallet = new Wallet { Balance = 0 }
                 };
 
