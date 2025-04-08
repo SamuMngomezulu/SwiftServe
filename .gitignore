@@ -34,6 +34,18 @@ packages/
 *.swo
 *.swp
 
+bin/
+obj/
+.vs/
+*.dll
+*.exe
+*.pdb
+*.user
+*.suo
+*.cache
+*.log
+
+
 # Optional config files
 appsettings.Development.json
 
