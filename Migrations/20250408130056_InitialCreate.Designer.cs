@@ -11,7 +11,7 @@ using SwiftServe.Data;
 namespace SwiftServe.Migrations
 {
     [DbContext(typeof(SwiftServeDbContext))]
-    [Migration("20250407132457_InitialCreate")]
+    [Migration("20250408130056_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
