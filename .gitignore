@@ -1,21 +1,13 @@
-# .NET
+# .NET build folders
 bin/
 obj/
+
+# Visual Studio and VS Code
 .vs/
+.vscode/
 *.user
 *.suo
-*.cache
-*.swp
-*.swo
-
-# NuGet
-.nuget/
-*.nupkg
-packages/
-
-# IDE
-.idea/
-.vscode/
+*.userprefs
 
 # Build results
 [Dd]ebug/
@@ -23,12 +15,14 @@ packages/
 x64/
 x86/
 bld/
-[Bb]in/
-[Oo]bj/
 [Ll]og/
 
-# User-specific files
-*.userprefs
+# NuGet
+.nuget/
+*.nupkg
+packages/
+
+# Databases
 *.db
 *.sqlite
 
@@ -37,4 +31,9 @@ bld/
 *.bak
 *.tmp
 *.DS_Store
+*.swo
+*.swp
+
+# Optional config files
 appsettings.Development.json
+
