@@ -3,9 +3,9 @@ using SwiftServe.Models;
 
 namespace SwiftServe.Data
 {
-    public class SwiftServeDbContext : DbContext
+    public class test_SwiftServeDbContext : DbContext
     {
-        public SwiftServeDbContext(DbContextOptions<SwiftServeDbContext> options) : base(options)
+        public test_SwiftServeDbContext(DbContextOptions<test_SwiftServeDbContext> options) : base(options)
         {
         }
 
@@ -15,17 +15,26 @@ namespace SwiftServe.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Seed predefined roles
+            modelBuilder.Entity<Role>().HasData(
+                new Role { RoleID = 1, RoleName = "Super User" },
+                new Role { RoleID = 2, RoleName = "Admin" },
+                new Role { RoleID = 3, RoleName = "User" }
+            );
+
+            // User-Wallet one-to-one
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Wallet)
                 .WithOne(w => w.User)
                 .HasForeignKey<Wallet>(w => w.UserID)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // User-Role many-to-one
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Role)
-                .WithOne(r => r.User)
-                .HasForeignKey<Role>(r => r.UserID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany()
+                .HasForeignKey(u => u.RoleID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.UserEmail)

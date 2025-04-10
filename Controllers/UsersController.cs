@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
 using SwiftServe.Data;
 using SwiftServe.Models;
 using SwiftServe.Dtos;
-using System.ComponentModel.DataAnnotations;
 
 namespace SwiftServe.Controllers
 {
@@ -12,15 +12,16 @@ namespace SwiftServe.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly SwiftServeDbContext _context;
+        private readonly test_SwiftServeDbContext _context;
         private readonly ILogger<UsersController> _logger;
 
-        public UsersController(SwiftServeDbContext context, ILogger<UsersController> logger)
+        public UsersController(test_SwiftServeDbContext context, ILogger<UsersController> logger)
         {
             _context = context;
             _logger = logger;
         }
 
+        // Create User
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegistrationDto registrationDto)
         {
@@ -46,13 +47,14 @@ namespace SwiftServe.Controllers
                     });
                 }
 
+                // Default to "User" role
                 var user = new User
                 {
                     FirstName = registrationDto.FirstName,
                     LastName = registrationDto.LastName,
                     UserEmail = registrationDto.Email,
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword(registrationDto.Password),
-                    Role = new Role { RoleName = "User" }, 
+                    RoleID = 3,
                     Wallet = new Wallet { Balance = 0 }
                 };
 
@@ -63,7 +65,8 @@ namespace SwiftServe.Controllers
                 {
                     Success = true,
                     Message = "User registered successfully",
-                    UserId = user.UserID
+                    UserId = user.UserID,
+                    Role = "User"
                 });
             }
             catch (Exception ex)
@@ -75,6 +78,83 @@ namespace SwiftServe.Controllers
                     Message = "An error occurred while processing your request"
                 });
             }
+        }
+
+        // GET Method by User ID
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUser(int userId)
+        {
+            var user = await _context.Users.Include(u => u.Role).Include(u => u.Wallet).FirstOrDefaultAsync(u => u.UserID == userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(new
+            {
+                UserID = user.UserID,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.UserEmail,
+                Role = user.Role.RoleName,
+                Balance = user.Wallet.Balance
+            });
+        }
+
+        // Update User's Role
+        [HttpPut("{userId}/role")]
+        //[Authorize(Roles = "Super User,Admin")]
+        public async Task<IActionResult> UpdateRole(int userId, [FromBody] RoleUpdateDto roleUpdate)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var roleExists = await _context.Roles.AnyAsync(r => r.RoleID == roleUpdate.RoleID);
+            if (!roleExists)
+            {
+                return BadRequest("Invalid role ID");
+            }
+
+            user.RoleID = roleUpdate.RoleID;
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Success = true,
+                Message = "Role updated successfully",
+                UserId = user.UserID,
+                RoleID = user.RoleID
+            });
+        }
+
+        // Delete User
+        [HttpDelete("{userId}")]
+        //[Authorize(Roles = "Super User,Admin")] //Disabled for CRUD tests
+        public async Task<IActionResult> DeleteUser(int userId)
+        {
+            var user = await _context.Users.Include(u => u.Wallet).FirstOrDefaultAsync(u => u.UserID == userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _context.Users.Remove(user);
+            _context.Wallets.Remove(user.Wallet);  // Remove associated wallet
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Success = true,
+                Message = "User and associated wallet deleted successfully"
+            });
         }
     }
 }

@@ -15,6 +15,8 @@ namespace SwiftServe.Models
         [Column(TypeName = "decimal(10, 2)")]
         public decimal Balance { get; set; } = 0;
 
+
+        //FK Navigation
         public virtual User User { get; set; }
     }
 }

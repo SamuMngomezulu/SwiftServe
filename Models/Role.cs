@@ -6,16 +6,11 @@ namespace SwiftServe.Models
     public class Role
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)] //ID does not Auto-Increment 
         public int RoleID { get; set; }
-
-        [ForeignKey("User")]
-        public int UserID { get; set; }
 
         [Required]
         [StringLength(50)]
         public string RoleName { get; set; }
-
-        public virtual User User { get; set; }
     }
 }

@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SwiftServe.Data;
 
@@ -10,12 +9,10 @@ using SwiftServe.Data;
 
 namespace SwiftServe.Migrations
 {
-    [DbContext(typeof(SwiftServeDbContext))]
-    [Migration("20250408130056_InitialCreate")]
-    partial class InitialCreate
+    [DbContext(typeof(test_SwiftServeDbContext))]
+    partial class test_SwiftServeDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,25 +24,33 @@ namespace SwiftServe.Migrations
             modelBuilder.Entity("SwiftServe.Models.Role", b =>
                 {
                     b.Property<int>("RoleID")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleID"));
 
                     b.Property<string>("RoleName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
                     b.HasKey("RoleID");
 
-                    b.HasIndex("UserID")
-                        .IsUnique();
-
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleID = 1,
+                            RoleName = "Super User"
+                        },
+                        new
+                        {
+                            RoleID = 2,
+                            RoleName = "Admin"
+                        },
+                        new
+                        {
+                            RoleID = 3,
+                            RoleName = "User"
+                        });
                 });
 
             modelBuilder.Entity("SwiftServe.Models.User", b =>
@@ -71,12 +76,17 @@ namespace SwiftServe.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int>("RoleID")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserEmail")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("UserID");
+
+                    b.HasIndex("RoleID");
 
                     b.HasIndex("UserEmail")
                         .IsUnique();
@@ -106,15 +116,15 @@ namespace SwiftServe.Migrations
                     b.ToTable("Wallets");
                 });
 
-            modelBuilder.Entity("SwiftServe.Models.Role", b =>
+            modelBuilder.Entity("SwiftServe.Models.User", b =>
                 {
-                    b.HasOne("SwiftServe.Models.User", "User")
-                        .WithOne("Role")
-                        .HasForeignKey("SwiftServe.Models.Role", "UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("SwiftServe.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleID")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("SwiftServe.Models.Wallet", b =>
@@ -130,9 +140,6 @@ namespace SwiftServe.Migrations
 
             modelBuilder.Entity("SwiftServe.Models.User", b =>
                 {
-                    b.Navigation("Role")
-                        .IsRequired();
-
                     b.Navigation("Wallet")
                         .IsRequired();
                 });

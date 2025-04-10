@@ -26,6 +26,9 @@ namespace SwiftServe.Models
         [StringLength(255)]
         public string PasswordHash { get; set; }
 
+        [ForeignKey("Role")]
+        public int RoleID { get; set; } = 3; // Default to "User" role
+
         // Navigation properties
         public virtual Role Role { get; set; }
         public virtual Wallet Wallet { get; set; }
