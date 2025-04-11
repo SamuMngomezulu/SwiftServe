@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SwiftServe.Models
+namespace SwiftServe.Models.User.User
 {
     public class Role
     {

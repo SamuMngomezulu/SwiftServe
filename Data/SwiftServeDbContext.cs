@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SwiftServe.Models;
+using SwiftServe.Models.User.User;
+
 
 namespace SwiftServe.Data
 {

@@ -5,6 +5,7 @@ using BCrypt.Net;
 using SwiftServe.Data;
 using SwiftServe.Models;
 using SwiftServe.Dtos;
+using SwiftServe.Models.User.User;
 
 namespace SwiftServe.Controllers
 {
