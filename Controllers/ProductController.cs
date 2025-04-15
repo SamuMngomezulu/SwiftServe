@@ -155,6 +155,33 @@ namespace SwiftServe.Controllers
             return Content(json, "application/json");
         }
 
+        // GET: api/products/category/{categoryId}
+        [HttpGet("category/{categoryId}")]
+        public async Task<IActionResult> GetProductsByCategory(int categoryId)
+        {
+            var category = await _context.Categories.FindAsync(categoryId);
+
+            if (category == null)
+            {
+                return NotFound(new { message = "Category not found" });
+            }
+
+            var products = await _context.Products
+                .Where(p => p.CategoryID == categoryId)
+                .Include(p => p.Category)
+                .Include(p => p.ProductSuppliers)
+                    .ThenInclude(ps => ps.Supplier)
+                .ToListAsync();
+
+            if (products == null || products.Count == 0)
+            {
+                return NotFound(new { message = "No products found in this category" });
+            }
+
+            return Ok(new { message = "Products retrieved successfully", products });
+        }
+
+
 
     }
 }
