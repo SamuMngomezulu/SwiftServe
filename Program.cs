@@ -1,18 +1,22 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SwiftServe.Data;
+using AutoMapper;
+using SwiftServe;
+using SwiftServe.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddDbContext<test_SwiftServeDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SwiftServeDB")));
+
+builder.Services.AddAutoMapper(typeof(MappingProfile)); // 💡 Register it here
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -20,8 +24,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-//app.UseAuthorization(); // Disabled Temporarily
+//app.UseAuthorization(); // Temporarily disabled
 
 app.MapControllers();
 
