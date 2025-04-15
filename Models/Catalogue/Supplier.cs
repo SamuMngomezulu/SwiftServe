@@ -1,25 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using SwiftServe.Models.Catalogue;
 
-namespace SwiftServe.Models
+
+namespace SwiftServe.Models.Catalogue
 {
     public class Supplier
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SupplierID { get; set; }
 
         [Required]
-        [StringLength(100)]
+        [StringLength(50)]
         public string SupplierName { get; set; }
 
-        [Required]
-        [StringLength(100)]
         [EmailAddress]
+        [StringLength(100)]
         public string ContactEmail { get; set; }
 
-        // Navigation property
-        public virtual ICollection<Product> Products { get; set; }
+        [StringLength(20)]
+        public string Phone { get; set; }
+
+        public ICollection<ProductSupplier> ProductSuppliers { get; set; }
     }
+
 }
