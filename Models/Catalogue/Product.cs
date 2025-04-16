@@ -1,11 +1,9 @@
-﻿using SwiftServe.Models.Catalogue;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-
+using SwiftServe.Models.Catalogue;
 
 namespace SwiftServe.Models.Catalogue
 {
-
     public class Product
     {
         [Key]
@@ -18,22 +16,24 @@ namespace SwiftServe.Models.Catalogue
         [StringLength(255)]
         public string ProductDescription { get; set; }
 
-        [Column(TypeName = "decimal(10, 2)")]
-        [Range(0.01, 999999.99, ErrorMessage = "Price must be positive.")]
+        [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal ProductPrice { get; set; }
 
-        [StringLength(255)]
-        public string ImageURL { get; set; }
+        public string ImagePublicID { get; set; } // Stores Cloudinary public ID
+        public string ImageURL { get; set; }      // Stores Cloudinary URL
 
+        [Required]
         public int ProductStockQuantity { get; set; }
 
-        public bool IsAvailable { get; set; } = true;
+        [Required]
+        public bool IsAvailable { get; set; } 
 
-        // Foreign Key
+        [ForeignKey("Category")]
         public int CategoryID { get; set; }
+
+        // Navigation properties
         public virtual Category Category { get; set; }
-
-        public ICollection<ProductSupplier> ProductSuppliers { get; set; }
+        public virtual ICollection<ProductSupplier> ProductSuppliers { get; set; }
     }
-
 }

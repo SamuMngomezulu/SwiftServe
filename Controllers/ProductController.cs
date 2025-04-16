@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SwiftServe.Models;
-using SwiftServe.Dtos;
+using SwiftServe.DTOs;
 using SwiftServe.Data;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using SwiftServe.DTOs.Catalogue;
+using SwiftServe.Services;
+using Microsoft.AspNetCore.Http;
 using SwiftServe.Models.Catalogue;
 using System.Text.Json;
 
@@ -16,40 +17,102 @@ namespace SwiftServe.Controllers
     {
         private readonly test_SwiftServeDbContext _context;
         private readonly IMapper _mapper;
+        private readonly CloudinaryService _cloudinaryService;
 
-        public ProductsController(test_SwiftServeDbContext context, IMapper mapper)
+        public ProductsController(
+            test_SwiftServeDbContext context,
+            IMapper mapper,
+            CloudinaryService cloudinaryService)
         {
             _context = context;
             _mapper = mapper;
+            _cloudinaryService = cloudinaryService;
         }
 
-        // POST: api/products
         [HttpPost]
-        public async Task<IActionResult> CreateProduct([FromBody] ProductCreateDto productCreateDto)
+        public async Task<IActionResult> CreateProduct([FromForm] ProductCreateDto productCreateDto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new { message = "Invalid product data", errors = ModelState });
+                return BadRequest(ModelState);
+            }
+
+            // Upload image to Cloudinary
+            var uploadResult = await _cloudinaryService.AddImageAsync(productCreateDto.ImageFile);
+            if (uploadResult.Error != null)
+            {
+                return BadRequest(new { message = "Image upload failed", error = uploadResult.Error.Message });
             }
 
             var product = _mapper.Map<Product>(productCreateDto);
+            product.ImageURL = uploadResult.SecureUrl.ToString();
+            product.ImagePublicID = uploadResult.PublicId;
+
             _context.Products.Add(product);
+            await _context.SaveChangesAsync();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(500, new { message = "Error saving product", detail = ex.Message });
-            }
-
-            return CreatedAtAction(nameof(GetProductById), new { id = product.ProductID }, new
-            {
-                message = "Product created successfully",
-                product
-            });
+            return CreatedAtAction(nameof(GetProductById),
+                new { id = product.ProductID },
+                new { message = "Product created successfully", product });
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductCreateDto productDto)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // If new image provided
+            if (productDto.ImageFile != null)
+            {
+                // Delete old image if exists
+                if (!string.IsNullOrEmpty(product.ImagePublicID))
+                {
+                    await _cloudinaryService.DeleteImageAsync(product.ImagePublicID);
+                }
+
+                // Upload new image
+                var uploadResult = await _cloudinaryService.AddImageAsync(productDto.ImageFile);
+                if (uploadResult.Error != null)
+                {
+                    return BadRequest(new { message = "Image upload failed", error = uploadResult.Error.Message });
+                }
+
+                product.ImageURL = uploadResult.SecureUrl.ToString();
+                product.ImagePublicID = uploadResult.PublicId;
+            }
+
+            _mapper.Map(productDto, product);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Product updated successfully", product });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            // Delete image from Cloudinary if exists
+            if (!string.IsNullOrEmpty(product.ImagePublicID))
+            {
+                await _cloudinaryService.DeleteImageAsync(product.ImagePublicID);
+            }
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Product deleted successfully" });
+        }
+
+        // ... keep your existing Get methods unchanged ...
 
         // GET: api/products/{id}
         [HttpGet("{id}")]
@@ -71,58 +134,6 @@ namespace SwiftServe.Controllers
                 message = "Product retrieved successfully",
                 product
             });
-        }
-
-        // PUT: api/products/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, ProductCreateDto productDto)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound(new { message = $"Product with ID {id} not found" });
-            }
-
-            _mapper.Map(productDto, product);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(500, new { message = "Error updating product", detail = ex.Message });
-            }
-
-            return Ok(new
-            {
-                message = $"Product with ID {id} updated successfully",
-                product
-            });
-        }
-
-        // DELETE: api/products/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound(new { message = $"Product with ID {id} not found" });
-            }
-
-            _context.Products.Remove(product);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                return StatusCode(500, new { message = "Error deleting product", detail = ex.Message });
-            }
-
-            return Ok(new { message = $"Product with ID {id} deleted successfully" });
         }
 
         // GET: api/products
