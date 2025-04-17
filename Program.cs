@@ -19,6 +19,7 @@ builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(
 // Register CloudinaryService
 builder.Services.AddScoped<CloudinaryService>();
 
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
