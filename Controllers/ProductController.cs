@@ -37,7 +37,21 @@ namespace SwiftServe.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Upload image to Cloudinary
+            // 🔍 Validate that the CategoryID exists
+            var categoryExists = await _context.Categories.AnyAsync(c => c.CategoryID == productCreateDto.CategoryID);
+            if (!categoryExists)
+            {
+                var validCategories = await _context.Categories
+                    .Select(c => new { c.CategoryID, c.CategoryName })
+                    .ToListAsync();
+
+                return BadRequest(new
+                {
+                    message = $"Category with ID {productCreateDto.CategoryID} does not exist.",
+                    validCategories
+                });
+            }
+
             var uploadResult = await _cloudinaryService.AddImageAsync(productCreateDto.ImageFile);
             if (uploadResult.Error != null)
             {
@@ -65,16 +79,28 @@ namespace SwiftServe.Controllers
                 return NotFound();
             }
 
-            // If new image provided
+            // 🔍 Validate that the CategoryID exists
+            var categoryExists = await _context.Categories.AnyAsync(c => c.CategoryID == productDto.CategoryID);
+            if (!categoryExists)
+            {
+                var validCategories = await _context.Categories
+                    .Select(c => new { c.CategoryID, c.CategoryName })
+                    .ToListAsync();
+
+                return BadRequest(new
+                {
+                    message = $"Category with ID {productDto.CategoryID} does not exist.",
+                    validCategories
+                });
+            }
+
             if (productDto.ImageFile != null)
             {
-                // Delete old image if exists
                 if (!string.IsNullOrEmpty(product.ImagePublicID))
                 {
                     await _cloudinaryService.DeleteImageAsync(product.ImagePublicID);
                 }
 
-                // Upload new image
                 var uploadResult = await _cloudinaryService.AddImageAsync(productDto.ImageFile);
                 if (uploadResult.Error != null)
                 {
@@ -90,6 +116,7 @@ namespace SwiftServe.Controllers
 
             return Ok(new { message = "Product updated successfully", product });
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SwiftServe.Data;
 
@@ -10,9 +11,11 @@ using SwiftServe.Data;
 namespace SwiftServe.Migrations
 {
     [DbContext(typeof(test_SwiftServeDbContext))]
-    partial class test_SwiftServeDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250422140545_ProductValidation")]
+    partial class ProductValidation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,6 +98,7 @@ namespace SwiftServe.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ProductDescription")
+                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
