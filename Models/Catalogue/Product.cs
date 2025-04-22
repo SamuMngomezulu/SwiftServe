@@ -9,28 +9,35 @@ namespace SwiftServe.Models.Catalogue
         [Key]
         public int ProductID { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [Required(ErrorMessage = "Product name is required.")]
+        [StringLength(100, ErrorMessage = "Product name cannot exceed 100 characters.")]
         public string ProductName { get; set; }
 
-        [StringLength(255)]
-        public string ProductDescription { get; set; }
+        [StringLength(255, ErrorMessage = "Description cannot exceed 255 characters.")]
+        public string? ProductDescription { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Product price is required.")]
+        [Range(0.01, 10000.00, ErrorMessage = "Price must be between 0.01 and 10,000.")]
         [Column(TypeName = "decimal(18,2)")]
         public decimal ProductPrice { get; set; }
 
-        public string ImagePublicID { get; set; } // Stores Cloudinary public ID
-        public string ImageURL { get; set; }      // Stores Cloudinary URL
+        [StringLength(255, ErrorMessage = "Image public ID is too long.")]
+        public string ImagePublicID { get; set; }
 
-        [Required]
+        [Url(ErrorMessage = "Image URL must be a valid URL.")]
+        public string ImageURL { get; set; }
+
+        [Required(ErrorMessage = "Stock quantity is required.")]
+        [Range(0, int.MaxValue, ErrorMessage = "Stock quantity must be zero or more.")]
         public int ProductStockQuantity { get; set; }
 
-        [Required]
-        public bool IsAvailable { get; set; } 
+        [Required(ErrorMessage = "Product availability must be specified.")]
+        public bool IsAvailable { get; set; }
 
+        [Required(ErrorMessage = "Category ID is required.")]
         [ForeignKey("Category")]
         public int CategoryID { get; set; }
+
 
         // Navigation properties
         public virtual Category Category { get; set; }

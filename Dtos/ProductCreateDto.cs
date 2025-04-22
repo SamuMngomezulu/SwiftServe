@@ -10,7 +10,7 @@ namespace SwiftServe.DTOs
         public string ProductName { get; set; }
 
         [StringLength(255)]
-        public string ProductDescription { get; set; }
+        public string? ProductDescription { get; set; }
 
         [Required]
         [Range(0.01, 9999999.99)]
