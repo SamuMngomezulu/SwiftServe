@@ -5,6 +5,8 @@ using SwiftServe;
 using SwiftServe.Mappings;
 using Microsoft.Extensions.Configuration;
 using SwiftServe.Services;
+using SwiftServe.Implementations;
+using SwiftServe.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,7 @@ builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(
 // Register CloudinaryService
 builder.Services.AddScoped<CloudinaryService>();
 
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
