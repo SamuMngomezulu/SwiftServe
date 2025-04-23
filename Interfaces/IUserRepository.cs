@@ -13,5 +13,7 @@ namespace SwiftServe.Interfaces
         Task<bool> RoleExistsAsync(int roleId);
         Task<bool> UpdateUserRoleAsync(int userId, int roleId);
         Task<bool> DeleteUserAsync(int userId);
+        Task<User?> GetUserByEmailAsync(string email);
+
     }
 }

@@ -23,6 +23,7 @@ namespace SwiftServe.Controllers
             _logger = logger;
         }
 
+        
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegistrationDto dto)
         {
@@ -70,8 +71,16 @@ namespace SwiftServe.Controllers
         }
 
         [HttpGet("{userId}")]
+        [Authorize(Roles = "Admin, Super User, User")]
         public async Task<IActionResult> GetUser(int userId)
         {
+            // Ensure a user can only fetch their own data unless they are an Admin or Super User
+            if (User.IsInRole("User") && User.Identity.Name != userId.ToString())
+            {
+                return Forbid(); // Users can't access others' data
+            }
+
+            // Admin and Super User can access any user’s data
             var user = await _userRepository.GetUserByIdAsync(userId);
             if (user == null) return NotFound();
 
@@ -86,7 +95,10 @@ namespace SwiftServe.Controllers
             });
         }
 
+
+
         [HttpPut("{userId}/role")]
+        [Authorize(Roles = "Super User")] // Only Super Users can update roles
         public async Task<IActionResult> UpdateRole(int userId, [FromBody] RoleUpdateDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -107,6 +119,7 @@ namespace SwiftServe.Controllers
         }
 
         [HttpDelete("{userId}")]
+        [Authorize(Roles = "Super User")] // Only Super Users can delete users
         public async Task<IActionResult> DeleteUser(int userId)
         {
             var result = await _userRepository.DeleteUserAsync(userId);
@@ -119,5 +132,4 @@ namespace SwiftServe.Controllers
             });
         }
     }
-
 }
