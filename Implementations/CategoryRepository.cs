@@ -20,6 +20,12 @@ namespace SwiftServe.Implementations
             return await _context.Categories.ToListAsync();
         }
 
+        public async Task<bool> CategoryExistsAsync(int categoryId)
+        {
+            return await _context.Categories.AnyAsync(c => c.CategoryID == categoryId);
+        }
+
+
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
             return await _context.Categories.FindAsync(id);

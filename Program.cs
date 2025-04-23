@@ -15,13 +15,13 @@ builder.Services.AddDbContext<test_SwiftServeDbContext>(options =>
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// Add Cloudinary configuration
+
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 
-// Register CloudinaryService
-builder.Services.AddScoped<CloudinaryService>();
 
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<CloudinaryService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

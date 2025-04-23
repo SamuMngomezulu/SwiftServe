@@ -8,6 +8,7 @@ namespace SwiftServe.Interfaces
         Task<IEnumerable<Category>> GetAllCategoriesAsync();
         Task<Category?> GetCategoryByIdAsync(int id);
         Task<Category?> GetCategoryByNameAsync(string name);
+        Task<bool> CategoryExistsAsync(int categoryId);
         Task<(IEnumerable<Product>, int totalItems)> GetProductsByCategoryAsync(int categoryId, int page, int pageSize);
     }
 
