@@ -8,12 +8,12 @@ namespace SwiftServe.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriesController : ControllerBase
+    public class CategoryController : ControllerBase
     {
         private readonly test_SwiftServeDbContext _context;
         private readonly IMapper _mapper;
 
-        public CategoriesController(test_SwiftServeDbContext context, IMapper mapper)
+        public CategoryController(test_SwiftServeDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -79,4 +79,5 @@ namespace SwiftServe.Controllers
             });
         }
     }
+
 }
