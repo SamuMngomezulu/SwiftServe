@@ -5,6 +5,8 @@ using SwiftServe;
 using SwiftServe.Mappings;
 using Microsoft.Extensions.Configuration;
 using SwiftServe.Services;
+using SwiftServe.Implementations;
+using SwiftServe.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,11 +15,15 @@ builder.Services.AddDbContext<test_SwiftServeDbContext>(options =>
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// Add Cloudinary configuration
+
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 
-// Register CloudinaryService
+//Interfaces and Repos
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<CloudinaryService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 
 
 builder.Services.AddControllers();

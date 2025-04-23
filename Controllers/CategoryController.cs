@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using SwiftServe.Data;
 using SwiftServe.DTOs;
+using SwiftServe.Implementations;
+using SwiftServe.Interfaces;
 
 namespace SwiftServe.Controllers
 {
@@ -10,20 +10,19 @@ namespace SwiftServe.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly test_SwiftServeDbContext _context;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public CategoryController(test_SwiftServeDbContext context, IMapper mapper)
+        public CategoryController(ICategoryRepository categoryRepository, IMapper mapper)
         {
-            _context = context;
+            _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
 
-        // GET: api/categories
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
-            var categories = await _context.Categories.ToListAsync();
+            var categories = await _categoryRepository.GetAllCategoriesAsync();
 
             return Ok(new
             {
@@ -32,37 +31,19 @@ namespace SwiftServe.Controllers
             });
         }
 
-        // GET: api/categories/{id}/products?page=1&pageSize=10
         [HttpGet("{id}/products")]
         public async Task<IActionResult> GetProductsByCategory(int id, int page = 1, int pageSize = 10)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _categoryRepository.GetCategoryByIdAsync(id);
             if (category == null)
-            {
                 return NotFound(new { message = "Category not found" });
-            }
 
-            var query = _context.Products
-                .Where(p => p.CategoryID == id)
-                .Include(p => p.Category)
-                .Include(p => p.ProductSuppliers)
-                    .ThenInclude(ps => ps.Supplier)
-                .AsQueryable();
-
-            var totalItems = await query.CountAsync();
-            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
-
-            var products = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            if (products.Count == 0)
-            {
+            var (products, totalItems) = await _categoryRepository.GetProductsByCategoryAsync(id, page, pageSize);
+            if (!products.Any())
                 return NotFound(new { message = "No products found in this category." });
-            }
 
             var productDtos = _mapper.Map<List<ProductBrowseDto>>(products);
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
             return Ok(new
             {
@@ -79,5 +60,5 @@ namespace SwiftServe.Controllers
             });
         }
     }
-
 }
+
