@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using SwiftServe.DTOs;
@@ -37,6 +37,7 @@ namespace SwiftServe.Controllers
                 return BadRequest(ModelState);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             // 🔍 Validate that the CategoryID exists
             var categoryExists = await _context.Categories.AnyAsync(c => c.CategoryID == productCreateDto.CategoryID);
             if (!categoryExists)
@@ -57,6 +58,9 @@ namespace SwiftServe.Controllers
 =======
             if (!await _categoryRepo.CategoryExistsAsync(productDto.CategoryID))
 >>>>>>> feature/add-repositories
+=======
+            if (!await _categoryRepo.CategoryExistsAsync(productDto.CategoryID))
+>>>>>>> 4646a749744f6b4524bc951b36daf79e5b9bff70
             {
                 var validCategories = await _categoryRepo.GetAllCategoriesAsync();
                 return BadRequest(new
@@ -101,6 +105,7 @@ namespace SwiftServe.Controllers
             }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             // 🔍 Validate that the CategoryID exists
             var categoryExists = await _context.Categories.AnyAsync(c => c.CategoryID == productDto.CategoryID);
             if (!categoryExists)
@@ -118,6 +123,8 @@ namespace SwiftServe.Controllers
 
 =======
 >>>>>>> feature/add-repositories
+=======
+>>>>>>> 4646a749744f6b4524bc951b36daf79e5b9bff70
             if (productDto.ImageFile != null)
             {
                 if (!string.IsNullOrEmpty(product.ImagePublicID))
@@ -136,7 +143,6 @@ namespace SwiftServe.Controllers
 
             return Ok(new { message = "Product updated successfully", product });
         }
-
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
@@ -190,3 +196,4 @@ namespace SwiftServe.Controllers
         }
     }
 }
+
