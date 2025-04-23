@@ -1,45 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using SwiftServe.DTOs;
-using SwiftServe.Implementations;
 using SwiftServe.Interfaces;
 
 namespace SwiftServe.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-<<<<<<< HEAD
-<<<<<<< HEAD
     public class CategoryController : ControllerBase
-=======
-    public class CategorieController : ControllerBase
->>>>>>> feature/add-repositories
-=======
-    public class CategoryController : ControllerBase
->>>>>>> 4646a749744f6b4524bc951b36daf79e5b9bff70
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-        public CategoryController(test_SwiftServeDbContext context, IMapper mapper)
-=======
-        public CategorieController(ICategoryRepository categoryRepository, IMapper mapper)
->>>>>>> feature/add-repositories
-=======
+        // Constructor with the necessary dependencies
         public CategoryController(ICategoryRepository categoryRepository, IMapper mapper)
->>>>>>> 4646a749744f6b4524bc951b36daf79e5b9bff70
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
         }
 
+        // Endpoint to retrieve all categories
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
             var categories = await _categoryRepository.GetAllCategoriesAsync();
-
             return Ok(new
             {
                 message = "Categories retrieved successfully",
@@ -47,6 +31,7 @@ namespace SwiftServe.Controllers
             });
         }
 
+        // Endpoint to get products by category with pagination
         [HttpGet("{id}/products")]
         public async Task<IActionResult> GetProductsByCategory(int id, int page = 1, int pageSize = 10)
         {
@@ -77,4 +62,3 @@ namespace SwiftServe.Controllers
         }
     }
 }
-

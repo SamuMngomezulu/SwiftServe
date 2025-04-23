@@ -36,31 +36,8 @@ namespace SwiftServe.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-            // 🔍 Validate that the CategoryID exists
-            var categoryExists = await _context.Categories.AnyAsync(c => c.CategoryID == productCreateDto.CategoryID);
-            if (!categoryExists)
-            {
-                var validCategories = await _context.Categories
-                    .Select(c => new { c.CategoryID, c.CategoryName })
-                    .ToListAsync();
-
-                return BadRequest(new
-                {
-                    message = $"Category with ID {productCreateDto.CategoryID} does not exist.",
-                    validCategories
-                });
-            }
-
-            var uploadResult = await _cloudinaryService.AddImageAsync(productCreateDto.ImageFile);
-            if (uploadResult.Error != null)
-=======
+            // Validate that the CategoryID exists
             if (!await _categoryRepo.CategoryExistsAsync(productDto.CategoryID))
->>>>>>> feature/add-repositories
-=======
-            if (!await _categoryRepo.CategoryExistsAsync(productDto.CategoryID))
->>>>>>> 4646a749744f6b4524bc951b36daf79e5b9bff70
             {
                 var validCategories = await _categoryRepo.GetAllCategoriesAsync();
                 return BadRequest(new
@@ -104,27 +81,6 @@ namespace SwiftServe.Controllers
                 });
             }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-            // 🔍 Validate that the CategoryID exists
-            var categoryExists = await _context.Categories.AnyAsync(c => c.CategoryID == productDto.CategoryID);
-            if (!categoryExists)
-            {
-                var validCategories = await _context.Categories
-                    .Select(c => new { c.CategoryID, c.CategoryName })
-                    .ToListAsync();
-
-                return BadRequest(new
-                {
-                    message = $"Category with ID {productDto.CategoryID} does not exist.",
-                    validCategories
-                });
-            }
-
-=======
->>>>>>> feature/add-repositories
-=======
->>>>>>> 4646a749744f6b4524bc951b36daf79e5b9bff70
             if (productDto.ImageFile != null)
             {
                 if (!string.IsNullOrEmpty(product.ImagePublicID))
@@ -196,4 +152,3 @@ namespace SwiftServe.Controllers
         }
     }
 }
-
