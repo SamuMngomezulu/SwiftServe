@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using SwiftServe.DTOs;
 using SwiftServe.Implementations;
@@ -8,12 +8,12 @@ namespace SwiftServe.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategorieController : ControllerBase
+    public class CategoryController : ControllerBase
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
 
-        public CategorieController(ICategoryRepository categoryRepository, IMapper mapper)
+        public CategoryController(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
@@ -23,6 +23,7 @@ namespace SwiftServe.Controllers
         public async Task<IActionResult> GetAllCategories()
         {
             var categories = await _categoryRepository.GetAllCategoriesAsync();
+
             return Ok(new
             {
                 message = "Categories retrieved successfully",
@@ -58,6 +59,6 @@ namespace SwiftServe.Controllers
                 products = productDtos
             });
         }
-
     }
 }
+

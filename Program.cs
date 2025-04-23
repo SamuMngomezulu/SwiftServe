@@ -25,6 +25,7 @@ builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

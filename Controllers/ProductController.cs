@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using SwiftServe.DTOs;
@@ -151,3 +151,4 @@ namespace SwiftServe.Controllers
         }
     }
 }
+
