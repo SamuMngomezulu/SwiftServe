@@ -28,41 +28,52 @@ namespace SwiftServe.Implementations
 
         public async Task<AuthResultDto> AuthenticateAsync(UserLoginDto loginDto)
         {
-            var user = await _userRepository.GetUserByEmailAsync(loginDto.Email);
-            if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
+            try
+            {
+                var user = await _userRepository.GetUserByEmailAsync(loginDto.Email);
+                if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
+                {
+                    return new AuthResultDto
+                    {
+                        Success = false,
+                        ErrorMessage = "Invalid email or password."
+                    };
+                }
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.UTF8.GetBytes(_jwtSettings.Key);
+
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new[]
+                    {
+                new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+                new Claim(ClaimTypes.Email, user.UserEmail),
+                new Claim(ClaimTypes.Role, user.Role.RoleName)
+            }),
+                    Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiresInMinutes),
+                    Issuer = _jwtSettings.Issuer,
+                    Audience = _jwtSettings.Audience,
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                };
+
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                return new AuthResultDto
+                {
+                    Success = true,
+                    Token = tokenHandler.WriteToken(token),
+                    Message = $"Login successful. Welcome back, {user.FirstName}!"
+                };
+            }
+            catch (Exception)
             {
                 return new AuthResultDto
                 {
                     Success = false,
-                    ErrorMessage = "Invalid credentials"
+                    ErrorMessage = "An unexpected error occurred during login. Please try again later."
                 };
             }
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_jwtSettings.Key);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-            {
-                    new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()), // For User.Identity.Name or FindFirstValue
-                    new Claim(ClaimTypes.Email, user.UserEmail),
-                    new Claim(ClaimTypes.Role, user.Role.RoleName)
-            }),
-
-                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiresInMinutes),
-                Issuer = _jwtSettings.Issuer,
-                Audience = _jwtSettings.Audience,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return new AuthResultDto
-            {
-                Success = true,
-                Token = tokenHandler.WriteToken(token),
-                Message = $"Login successful. Welcome back, {user.FirstName}!"
-            };
         }
+
     }
 }
