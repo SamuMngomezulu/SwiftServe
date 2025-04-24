@@ -7,6 +7,7 @@ using SwiftServe.Models;
 using SwiftServe.Dtos;
 using SwiftServe.Models.User.User;
 using SwiftServe.Interfaces;
+using System.Security.Claims;
 
 namespace SwiftServe.Controllers
 {
@@ -75,10 +76,11 @@ namespace SwiftServe.Controllers
         public async Task<IActionResult> GetUser(int userId)
         {
             // Ensure a user can only fetch their own data unless they are an Admin or Super User
-            if (User.IsInRole("User") && User.Identity.Name != userId.ToString())
+            if (User.IsInRole("User") && User.FindFirstValue(ClaimTypes.NameIdentifier) != userId.ToString())
             {
-                return Forbid(); // Users can't access others' data
+                return Forbid();
             }
+
 
             // Admin and Super User can access any user’s data
             var user = await _userRepository.GetUserByIdAsync(userId);

@@ -6,6 +6,7 @@ using SwiftServe.Interfaces;
 using SwiftServe.Models.Catalogue;
 using SwiftServe.Services;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SwiftServe.Controllers
 {
@@ -30,6 +31,7 @@ namespace SwiftServe.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Roles = "Super User, Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromForm] ProductCreateDto productDto)
         {
@@ -64,6 +66,7 @@ namespace SwiftServe.Controllers
             });
         }
 
+        [Authorize(Roles = "Super User, Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductCreateDto productDto)
         {
@@ -100,6 +103,7 @@ namespace SwiftServe.Controllers
             return Ok(new { message = "Product updated successfully", product });
         }
 
+        [Authorize(Roles = "Super User, Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
@@ -117,6 +121,7 @@ namespace SwiftServe.Controllers
             return Ok(new { message = "Product deleted successfully" });
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProductById(int id)
         {
@@ -131,6 +136,7 @@ namespace SwiftServe.Controllers
             });
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()
         {

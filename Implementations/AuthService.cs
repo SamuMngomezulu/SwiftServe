@@ -7,10 +7,11 @@ using SwiftServe.Models.User.User;
 using SwiftServe.Settings;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SwiftServe.Services
+namespace SwiftServe.Implementations
 {
     public class AuthService : IAuthService
     {
@@ -42,12 +43,13 @@ namespace SwiftServe.Services
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new System.Security.Claims.ClaimsIdentity(new[]
-                {
-                    new System.Security.Claims.Claim("id", user.UserID.ToString()),
-                    new System.Security.Claims.Claim("email", user.UserEmail),
-                    new System.Security.Claims.Claim("role", user.Role.RoleName)
-                }),
+                Subject = new ClaimsIdentity(new[]
+            {
+                    new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()), // For User.Identity.Name or FindFirstValue
+                    new Claim(ClaimTypes.Email, user.UserEmail),
+                    new Claim(ClaimTypes.Role, user.Role.RoleName)
+            }),
+
                 Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiresInMinutes),
                 Issuer = _jwtSettings.Issuer,
                 Audience = _jwtSettings.Audience,
