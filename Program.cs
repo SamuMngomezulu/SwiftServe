@@ -15,26 +15,29 @@ using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add DbContext
 builder.Services.AddDbContext<test_SwiftServeDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SwiftServeDB")));
 
+// Add AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+// Bind Cloudinary config
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 
-// Interfaces and Repos
+// Register services and repositories
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-// Bind JWT config
+// Configure JWT settings
 var jwtSettingsSection = builder.Configuration.GetSection("Jwt");
 builder.Services.Configure<JwtSettings>(jwtSettingsSection);
 var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
 
-// Configure JWT Auth
+// Add JWT authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,7 +58,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Configure Authorization Policies (Role-Based Access)
+// Role-based authorization policies
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
@@ -63,10 +66,21 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
 });
 
+// CORS configuration for React frontend at localhost:3000
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactDevClient", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+// Add Controllers & Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
-// Swagger configuration to support JWT Authorization
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
@@ -94,6 +108,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// Swagger UI in Development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -102,11 +117,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication(); // Add this line for JWT auth middleware
-app.UseAuthorization();  // Add this line for authorization middleware
+// Apply CORS before authentication
+app.UseCors("ReactDevClient");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
+// Apply migrations on startup
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<test_SwiftServeDbContext>();
