@@ -31,7 +31,7 @@ const Login = () => {
         try {
             const { success, message } = await login(email, password);
             if (success) {
-                navigate('/dashboard');
+                navigate('/products');
             } else {
                 setError(message);
             }
