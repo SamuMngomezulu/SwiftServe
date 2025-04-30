@@ -141,20 +141,28 @@ namespace SwiftServe.Controllers
         public async Task<IActionResult> GetAllProducts()
         {
             var products = await _productRepo.GetAllProductsAsync();
-            if (!products.Any())
-                return NotFound(new { message = "No products found" });
 
-            var json = JsonSerializer.Serialize(new
+            if (!products.Any())
+                return Ok(new { message = "No products found", products = Array.Empty<object>() });
+
+            return Ok(new
             {
                 message = "Products retrieved successfully",
-                products
-            }, new JsonSerializerOptions
-            {
-                ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve,
-                WriteIndented = true
+                products = products.Select(p => new {
+                    p.ProductID,
+                    p.ProductName,
+                    p.ProductDescription,
+                    p.ProductPrice,
+                    p.ImageURL,
+                    p.ProductStockQuantity,
+                    p.IsAvailable,
+                    Category = p.Category != null ? new
+                    {
+                        p.Category.CategoryID,
+                        p.Category.CategoryName
+                    } : null
+                }).ToList()
             });
-
-            return Content(json, "application/json");
         }
     }
 }
