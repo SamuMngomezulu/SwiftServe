@@ -33,7 +33,7 @@ const ProductCard = ({ product }) => {
                 <p className="product-price">R{product.productPrice?.toFixed(2)}</p>
 
                 <div className="product-meta">
-                    <span>Stock: {product.productStockQuantity}</span>
+                   
                     <span>Category: {product.category?.categoryName || 'Unknown'}</span>
                 </div>
 

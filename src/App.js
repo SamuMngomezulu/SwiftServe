@@ -10,6 +10,7 @@ import CartModal from './components/cart/CartModal';
 import './components/styles/styles.css';
 
 
+
 function App() {
     return (
         <Router>
@@ -22,6 +23,8 @@ function App() {
                             <Route path="/products" element={<ProductListPage />} />
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/register" element={<RegisterPage />} />
+                          
+
                         </Routes>
                     </main>
                     <CartButton />

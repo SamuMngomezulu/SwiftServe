@@ -1,19 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../services/api';
 import '../styles/addProductForm.css';
 
 const AddProductForm = ({ onSuccess }) => {
     const [formData, setFormData] = useState({
-        name: '',
-        description: '',
-        price: '',
-        category: '',
-        quantity: '',
-        is_active: true,
-        image: null,
+        ProductName: '',
+        ProductDescription: '',
+        ProductPrice: '',
+        CategoryID: '',
+        ProductStockQuantity: '',
+        IsAvailable: true,
+        ImageFile: null,
     });
+    const [categories, setCategories] = useState([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await api.get('/categories');
+                setCategories(response.data);
+            } catch (err) {
+                console.error('Error fetching categories:', err);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
@@ -24,15 +37,15 @@ const AddProductForm = ({ onSuccess }) => {
     };
 
     const validate = () => {
-        const { name, description, price, category, quantity, image } = formData;
-        if (!name || !price || !category || !quantity || !image) {
+        const { ProductName, ProductPrice, CategoryID, ProductStockQuantity, ImageFile } = formData;
+        if (!ProductName || !ProductPrice || !CategoryID || !ProductStockQuantity || !ImageFile) {
             return 'All fields except description are required.';
         }
-        if (isNaN(price) || parseFloat(price) <= 0) {
+        if (isNaN(ProductPrice) || parseFloat(ProductPrice) <= 0) {
             return 'Price must be a positive number.';
         }
-        if (!Number.isInteger(Number(quantity)) || quantity < 0) {
-            return 'Quantity must be a non-negative integer.';
+        if (!Number.isInteger(Number(ProductStockQuantity))) {
+            return 'Quantity must be an integer.';
         }
         return '';
     };
@@ -54,13 +67,13 @@ const AddProductForm = ({ onSuccess }) => {
             });
             onSuccess();
             setFormData({
-                name: '',
-                description: '',
-                price: '',
-                category: '',
-                quantity: '',
-                is_active: true,
-                image: null,
+                ProductName: '',
+                ProductDescription: '',
+                ProductPrice: '',
+                CategoryID: '',
+                ProductStockQuantity: '',
+                IsAvailable: true,
+                ImageFile: null,
             });
             setError('');
         } catch (err) {
@@ -79,8 +92,8 @@ const AddProductForm = ({ onSuccess }) => {
                 <label>Product Name</label>
                 <input
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="ProductName"
+                    value={formData.ProductName}
                     onChange={handleChange}
                     required
                 />
@@ -89,8 +102,8 @@ const AddProductForm = ({ onSuccess }) => {
             <div className="form-group">
                 <label>Description</label>
                 <textarea
-                    name="description"
-                    value={formData.description}
+                    name="ProductDescription"
+                    value={formData.ProductDescription}
                     onChange={handleChange}
                 />
             </div>
@@ -102,8 +115,8 @@ const AddProductForm = ({ onSuccess }) => {
                         type="number"
                         step="0.01"
                         min="0.01"
-                        name="price"
-                        value={formData.price}
+                        name="ProductPrice"
+                        value={formData.ProductPrice}
                         onChange={handleChange}
                         required
                     />
@@ -111,13 +124,19 @@ const AddProductForm = ({ onSuccess }) => {
 
                 <div className="form-group">
                     <label>Category</label>
-                    <input
-                        type="text"
-                        name="category"
-                        value={formData.category}
+                    <select
+                        name="CategoryID"
+                        value={formData.CategoryID}
                         onChange={handleChange}
                         required
-                    />
+                    >
+                        <option value="">Select a category</option>
+                        {categories.map(category => (
+                            <option key={category.categoryID} value={category.categoryID}>
+                                {category.categoryName}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
 
@@ -127,8 +146,8 @@ const AddProductForm = ({ onSuccess }) => {
                     <input
                         type="number"
                         min="0"
-                        name="quantity"
-                        value={formData.quantity}
+                        name="ProductStockQuantity"
+                        value={formData.ProductStockQuantity}
                         onChange={handleChange}
                         required
                     />
@@ -138,7 +157,7 @@ const AddProductForm = ({ onSuccess }) => {
                     <label>Image</label>
                     <input
                         type="file"
-                        name="image"
+                        name="ImageFile"
                         accept="image/*"
                         onChange={handleChange}
                         required
@@ -149,12 +168,12 @@ const AddProductForm = ({ onSuccess }) => {
             <div className="form-checkbox-group">
                 <input
                     type="checkbox"
-                    id="is_active"
-                    name="is_active"
-                    checked={formData.is_active}
+                    id="IsAvailable"
+                    name="IsAvailable"
+                    checked={formData.IsAvailable}
                     onChange={handleChange}
                 />
-                <label htmlFor="is_active">Active</label>
+                <label htmlFor="IsAvailable">Active</label>
             </div>
 
             <button type="submit" disabled={loading}>
