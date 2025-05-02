@@ -1,5 +1,15 @@
 import api from './api';
 
+export const getCategories = async () => {
+    try {
+        const response = await api.get('/category'); // Changed from '/categories'
+        return response.data?.data || [];
+    } catch (error) {
+        console.error('Error fetching categories:', error);
+        throw error;
+    }
+};
+
 export const getProducts = async () => {
     try {
         const response = await api.get('/products');

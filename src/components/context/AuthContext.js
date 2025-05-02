@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
                 setUser({
                     email: decoded.email,
                     userId: decoded.nameid,
-                    roles: [decoded.role],  // Ensure it's an array
+                    roles: [decoded.role],  // Assumes a single role for now
                     name: decoded.name || ''
                 });
             } catch (error) {
@@ -57,7 +57,8 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
-    const hasRole = (role) => user?.roles?.includes(role);
+    const hasRole = (role) =>
+        user?.roles?.some(r => r.toLowerCase() === role.toLowerCase());
 
     return (
         <AuthContext.Provider value={{

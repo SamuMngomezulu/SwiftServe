@@ -16,12 +16,10 @@ function App() {
                     <Header />
                     <main className="main-content">
                         <Routes>
-                            <Route path="/" element={<ProductListPage />} />
-                            <Route path="/products" element={<ProductListPage />} />
+                            <Route path="/" element={<LoginPage />} />
                             <Route path="/login" element={<LoginPage />} />
                             <Route path="/register" element={<RegisterPage />} />
-                          
-
+                            <Route path="/products" element={<ProductListPage />} />
                         </Routes>
                     </main>
                 </CartProvider>

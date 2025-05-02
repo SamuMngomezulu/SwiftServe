@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import '../styles/addProductForm.css';
@@ -23,10 +23,16 @@ const AddProductForm = ({ onSuccess }) => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await api.get('/categories');
-                setCategories(response.data);
+                const response = await api.get('/category');
+                const fetchedCategories = response.data?.data || [];
+                setCategories(fetchedCategories);
+                if (fetchedCategories.length === 0) {
+                    setError('No categories available. Please add a category first.');
+                }
             } catch (err) {
                 console.error('Error fetching categories:', err);
+                setError('Failed to load categories. Please try again later.');
+                setCategories([]);
             }
         };
         fetchCategories();
@@ -34,41 +40,90 @@ const AddProductForm = ({ onSuccess }) => {
 
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
+        if (type === 'file') {
+            const file = files[0];
+            if (file) {
+                // Validate file size (max 10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    setError('Image file size must be less than 10MB.');
+                    return;
+                }
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    setError('Only image files (e.g., PNG, JPEG) are allowed.');
+                    return;
+                }
+            }
+        }
         setFormData(prev => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : (type === 'file' ? files[0] : value)
         }));
+        // Clear error when user starts correcting input
+        setError('');
     };
 
     const validate = () => {
         const { ProductName, ProductPrice, CategoryID, ProductStockQuantity, ImageFile } = formData;
+
         if (!ProductName || !ProductPrice || !CategoryID || !ProductStockQuantity || !ImageFile) {
             return 'All fields except description are required.';
         }
-        if (isNaN(ProductPrice) || parseFloat(ProductPrice) <= 0) {
+
+        const price = parseFloat(ProductPrice);
+        if (isNaN(price) || price <= 0) {
             return 'Price must be a positive number.';
         }
-        if (!Number.isInteger(Number(ProductStockQuantity))) {
+        if (price > 9999999.99) {
+            return 'Price must not exceed 9999999.99.';
+        }
+
+        const quantity = Number(ProductStockQuantity);
+        if (!Number.isInteger(quantity)) {
             return 'Quantity must be an integer.';
         }
+        if (quantity < 0) {
+            return 'Quantity cannot be negative.';
+        }
+
+        if (!categories.some(cat => cat.categoryID === parseInt(CategoryID))) {
+            return 'Please select a valid category.';
+        }
+
         return '';
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const validationError = validate();
-        if (validationError) return setError(validationError);
+        if (validationError) {
+            setError(validationError);
+            return;
+        }
+
+        const token = localStorage.getItem('token');
+        console.log('Submitting with token:', token);
 
         const data = new FormData();
-        Object.entries(formData).forEach(([key, value]) => {
-            if (value !== null) data.append(key, value);
-        });
+        data.append('ProductName', formData.ProductName);
+        data.append('ProductDescription', formData.ProductDescription || '');
+        data.append('ProductPrice', parseFloat(formData.ProductPrice).toFixed(2));
+        data.append('CategoryID', parseInt(formData.CategoryID));
+        data.append('ProductStockQuantity', parseInt(formData.ProductStockQuantity));
+        data.append('IsAvailable', formData.IsAvailable.toString()); // Send as "true"/"false"
+        data.append('ImageFile', formData.ImageFile);
+
+        // Log FormData entries for debugging
+        for (let [key, value] of data.entries()) {
+            console.log(`${key}:`, value);
+        }
 
         setLoading(true);
         try {
-            await api.post('/products', data, {
+            const response = await api.post('/products', data, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
+            console.log('Product created successfully:', response.data);
             onSuccess();
             setFormData({
                 ProductName: '',
@@ -81,7 +136,21 @@ const AddProductForm = ({ onSuccess }) => {
             });
             setError('');
         } catch (err) {
-            setError(err.response?.data?.message || 'Failed to add product. Please try again.');
+            console.error('Product creation error:', err);
+            let errorMessage = 'Failed to add product. Please try again.';
+            if (err.response) {
+                if (err.response.status === 401) {
+                    errorMessage = 'Unauthorized. Please log in again.';
+                } else if (err.response.status === 400) {
+                    errorMessage = err.response.data?.message || 'Invalid input. Please check your data.';
+                    if (err.response.data?.error) {
+                        errorMessage += ` Error: ${err.response.data.error.Message}`;
+                    }
+                } else {
+                    errorMessage = err.response.data?.message || err.message;
+                }
+            }
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -103,6 +172,7 @@ const AddProductForm = ({ onSuccess }) => {
                     value={formData.ProductName}
                     onChange={handleChange}
                     required
+                    maxLength="100"
                 />
             </div>
 
@@ -112,6 +182,7 @@ const AddProductForm = ({ onSuccess }) => {
                     name="ProductDescription"
                     value={formData.ProductDescription}
                     onChange={handleChange}
+                    maxLength="255"
                 />
             </div>
 
@@ -122,6 +193,7 @@ const AddProductForm = ({ onSuccess }) => {
                         type="number"
                         step="0.01"
                         min="0.01"
+                        max="9999999.99"
                         name="ProductPrice"
                         value={formData.ProductPrice}
                         onChange={handleChange}
@@ -153,6 +225,7 @@ const AddProductForm = ({ onSuccess }) => {
                     <input
                         type="number"
                         min="0"
+                        step="1"
                         name="ProductStockQuantity"
                         value={formData.ProductStockQuantity}
                         onChange={handleChange}
@@ -180,7 +253,7 @@ const AddProductForm = ({ onSuccess }) => {
                     checked={formData.IsAvailable}
                     onChange={handleChange}
                 />
-                <label htmlFor="IsAvailable">Active</label>
+                <label htmlFor="IsAvailable">Available</label>
             </div>
 
             <button type="submit" disabled={loading}>
