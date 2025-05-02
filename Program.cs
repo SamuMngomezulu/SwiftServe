@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SwiftServe.Settings;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 var jwtSettingsSection = builder.Configuration.GetSection("Jwt");
 builder.Services.Configure<JwtSettings>(jwtSettingsSection);
 var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
+
 
 // Add JWT authentication
 builder.Services.AddAuthentication(options =>
