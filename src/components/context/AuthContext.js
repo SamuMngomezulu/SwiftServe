@@ -1,21 +1,28 @@
 import { createContext, useState, useContext, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
+
 import { login as authLogin, register as authRegister } from '../services/authService';
 
 const AuthContext = createContext();
+
+const ROLE_KEYS = {
+    SUPER_USER: 'Super User',
+    ADMIN: 'Admin',
+    USER: 'User'
+};
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token') || null);
 
     useEffect(() => {
-        // Load user data from token on initial load
         if (token) {
             try {
-                const decoded = JSON.parse(atob(token.split('.')[1]));
+                const decoded = jwtDecode(token);
                 setUser({
                     email: decoded.email,
-                    userId: decoded.userId,
-                    roles: decoded.roles || [],
+                    userId: decoded.nameid,
+                    roles: [decoded.role],  // Ensure it's an array
                     name: decoded.name || ''
                 });
             } catch (error) {
@@ -50,9 +57,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
-    const hasRole = (role) => {
-        return user?.roles?.includes(role);
-    };
+    const hasRole = (role) => user?.roles?.includes(role);
 
     return (
         <AuthContext.Provider value={{
@@ -62,7 +67,8 @@ export const AuthProvider = ({ children }) => {
             register,
             logout,
             hasRole,
-            isAuthenticated: !!token
+            isAuthenticated: !!token,
+            ROLE_KEYS
         }}>
             {children}
         </AuthContext.Provider>

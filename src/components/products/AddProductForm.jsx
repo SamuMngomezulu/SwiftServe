@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import '../styles/addProductForm.css';
 
 const AddProductForm = ({ onSuccess }) => {
+    const { user, hasRole, ROLE_KEYS } = useAuth();
     const [formData, setFormData] = useState({
         ProductName: '',
         ProductDescription: '',
@@ -15,6 +17,8 @@ const AddProductForm = ({ onSuccess }) => {
     const [categories, setCategories] = useState([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    const isAdminOrSuperUser = hasRole(ROLE_KEYS.SUPER_USER) || hasRole(ROLE_KEYS.ADMIN);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -82,6 +86,9 @@ const AddProductForm = ({ onSuccess }) => {
             setLoading(false);
         }
     };
+
+    if (!user) return <div>Please login to add products.</div>;
+    if (!isAdminOrSuperUser) return <div>You do not have permission to add products.</div>;
 
     return (
         <form onSubmit={handleSubmit} className="add-product-form">

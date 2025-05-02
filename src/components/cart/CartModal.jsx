@@ -1,6 +1,8 @@
 import { useCart } from '../context/CartContext';
 import '../styles/cartModal.css';
 
+;
+
 const CartModal = () => {
     const {
         cartItems,

@@ -1,10 +1,18 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
+import { useAuth } from './AuthContext'; // Adjust the import path as necessary
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const { isAuthenticated } = useAuth();
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            setCartItems([]);
+        }
+    }, [isAuthenticated]);
 
     const addToCart = (product) => {
         setCartItems(prevItems => {
