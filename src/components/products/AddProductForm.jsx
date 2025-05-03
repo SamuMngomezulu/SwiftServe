@@ -1,9 +1,10 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import '../styles/addProductForm.css';
 
 const AddProductForm = ({ onSuccess }) => {
+    const fileInputRef = useRef(null);
     const { user, hasRole, ROLE_KEYS } = useAuth();
     const [formData, setFormData] = useState({
         ProductName: '',
@@ -38,28 +39,59 @@ const AddProductForm = ({ onSuccess }) => {
         fetchCategories();
     }, []);
 
+    const handlePriceChange = (value) => {
+        // Remove any non-digit characters except decimal point
+        let sanitizedValue = value.replace(/[^0-9.]/g, '');
+
+        // Ensure only one decimal point
+        const parts = sanitizedValue.split('.');
+        if (parts.length > 2) {
+            sanitizedValue = parts[0] + '.' + parts.slice(1).join('');
+        }
+
+        // Limit to 2 decimal places
+        if (parts.length > 1 && parts[1].length > 2) {
+            sanitizedValue = parts[0] + '.' + parts[1].substring(0, 2);
+        }
+
+        // Prevent leading zeros without decimal
+        if (parts[0].length > 1 && parts[0].startsWith('0') && !parts[0].includes('.')) {
+            sanitizedValue = parts[0].substring(1);
+        }
+
+        setFormData(prev => ({
+            ...prev,
+            ProductPrice: sanitizedValue
+        }));
+    };
+
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
+
+        if (name === 'ProductPrice') {
+            handlePriceChange(value);
+            return;
+        }
+
         if (type === 'file') {
             const file = files[0];
             if (file) {
-                // Validate file size (max 10MB)
                 if (file.size > 10 * 1024 * 1024) {
                     setError('Image file size must be less than 10MB.');
                     return;
                 }
-                // Validate file type
                 if (!file.type.startsWith('image/')) {
                     setError('Only image files (e.g., PNG, JPEG) are allowed.');
                     return;
                 }
             }
         }
+
         setFormData(prev => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : (type === 'file' ? files[0] : value)
         }));
-        // Clear error when user starts correcting input
+
         setError('');
     };
 
@@ -70,17 +102,28 @@ const AddProductForm = ({ onSuccess }) => {
             return 'All fields except description are required.';
         }
 
+        // Price validation
         const price = parseFloat(ProductPrice);
-        if (isNaN(price) || price <= 0) {
-            return 'Price must be a positive number.';
+        if (isNaN(price)) {
+            return 'Price must be a valid number.';
         }
-        if (price > 9999999.99) {
-            return 'Price must not exceed 9999999.99.';
+        if (price <= 0) {
+            return 'Price must be greater than 0.';
+        }
+        if (price > 10000) {
+            return 'Price must not exceed 10,000.';
         }
 
-        const quantity = Number(ProductStockQuantity);
-        if (!Number.isInteger(quantity)) {
-            return 'Quantity must be an integer.';
+        // Validate decimal places
+        const decimalPart = ProductPrice.split('.')[1];
+        if (decimalPart && decimalPart.length > 2) {
+            return 'Price can have maximum 2 decimal places';
+        }
+
+        // Quantity validation
+        const quantity = parseInt(ProductStockQuantity);
+        if (isNaN(quantity)) {
+            return 'Quantity must be a valid number.';
         }
         if (quantity < 0) {
             return 'Quantity cannot be negative.';
@@ -95,36 +138,43 @@ const AddProductForm = ({ onSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         const validationError = validate();
         if (validationError) {
             setError(validationError);
             return;
         }
 
-        const token = localStorage.getItem('token');
-        console.log('Submitting with token:', token);
-
-        const data = new FormData();
-        data.append('ProductName', formData.ProductName);
-        data.append('ProductDescription', formData.ProductDescription || '');
-        data.append('ProductPrice', parseFloat(formData.ProductPrice).toFixed(2));
-        data.append('CategoryID', parseInt(formData.CategoryID));
-        data.append('ProductStockQuantity', parseInt(formData.ProductStockQuantity));
-        data.append('IsAvailable', formData.IsAvailable.toString()); // Send as "true"/"false"
-        data.append('ImageFile', formData.ImageFile);
-
-        // Log FormData entries for debugging
-        for (let [key, value] of data.entries()) {
-            console.log(`${key}:`, value);
-        }
-
-        setLoading(true);
         try {
+            setLoading(true);
+
+            const data = new FormData();
+            data.append('ProductName', formData.ProductName);
+            data.append('ProductDescription', formData.ProductDescription || '');
+
+            // Ensure ProductPrice is sent as a proper decimal number
+            const price = parseFloat(formData.ProductPrice);
+            if (isNaN(price)) {
+                throw new Error('Invalid price format');
+            }
+            data.append('ProductPrice', price.toString()); // Convert to string
+
+            data.append('CategoryID', formData.CategoryID);
+            data.append('ProductStockQuantity', formData.ProductStockQuantity);
+            data.append('IsAvailable', formData.IsAvailable);
+            data.append('ImageFile', formData.ImageFile);
+
             const response = await api.post('/products', data, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             });
-            console.log('Product created successfully:', response.data);
-            onSuccess();
+
+            // Use the response data if needed
+            const createdProduct = response.data;
+            console.log('Created product:', createdProduct);
+
+            // Reset form on success
             setFormData({
                 ProductName: '',
                 ProductDescription: '',
@@ -135,32 +185,50 @@ const AddProductForm = ({ onSuccess }) => {
                 ImageFile: null,
             });
             setError('');
+
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+
+            if (onSuccess) onSuccess();
+
         } catch (err) {
             console.error('Product creation error:', err);
+
             let errorMessage = 'Failed to add product. Please try again.';
             if (err.response) {
                 if (err.response.status === 401) {
                     errorMessage = 'Unauthorized. Please log in again.';
                 } else if (err.response.status === 400) {
-                    errorMessage = err.response.data?.message || 'Invalid input. Please check your data.';
-                    if (err.response.data?.error) {
-                        errorMessage += ` Error: ${err.response.data.error.Message}`;
+                    if (err.response.data?.errors) {
+                        const errors = Object.values(err.response.data.errors).flat();
+                        errorMessage = errors.join('\n');
+                    } else {
+                        errorMessage = err.response.data?.message || 'Invalid input. Please check your data.';
                     }
-                } else {
-                    errorMessage = err.response.data?.message || err.message;
+                } else if (err.response.data?.message) {
+                    errorMessage = err.response.data.message;
                 }
+            } else if (err.message) {
+                errorMessage = err.message;
             }
+
             setError(errorMessage);
         } finally {
             setLoading(false);
         }
     };
 
-    if (!user) return <div>Please login to add products.</div>;
-    if (!isAdminOrSuperUser) return <div>You do not have permission to add products.</div>;
+    if (!user) {
+        return <div>Please login to add products.</div>;
+    }
+
+    if (!isAdminOrSuperUser) {
+        return <div>You do not have permission to add products.</div>;
+    }
 
     return (
-        <form onSubmit={handleSubmit} className="add-product-form">
+        <form onSubmit={handleSubmit} className="add-product-form" encType="multipart/form-data">
             <h2>Add New Product</h2>
             {error && <div className="form-error">{error}</div>}
 
@@ -190,14 +258,23 @@ const AddProductForm = ({ onSuccess }) => {
                 <div className="form-group">
                     <label>Price</label>
                     <input
-                        type="number"
-                        step="0.01"
-                        min="0.01"
-                        max="9999999.99"
+                        type="text"
+                        inputMode="decimal"
                         name="ProductPrice"
                         value={formData.ProductPrice}
                         onChange={handleChange}
+                        onBlur={(e) => {
+                            const value = e.target.value;
+                            if (value && !isNaN(value)) {
+                                const formatted = parseFloat(value).toFixed(2);
+                                setFormData(prev => ({
+                                    ...prev,
+                                    ProductPrice: formatted
+                                }));
+                            }
+                        }}
                         required
+                        placeholder="0.00"
                     />
                 </div>
 
@@ -241,6 +318,7 @@ const AddProductForm = ({ onSuccess }) => {
                         accept="image/*"
                         onChange={handleChange}
                         required
+                        ref={fileInputRef} 
                     />
                 </div>
             </div>

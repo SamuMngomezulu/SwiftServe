@@ -2,33 +2,60 @@
     max-width: 400px;
     margin: 2rem auto;
     padding: 2rem;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
+    .auth-form-container h2 {
+        margin-bottom: 1rem;
+        color: #2c3e50;
+    }
+
 .auth-form {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.form-input {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
 }
+
+    .form-group label {
+        font-weight: 500;
+        color: #34495e;
+    }
+
+    .form-group input {
+        padding: 0.75rem;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.2s ease;
+    }
+
+        .form-group input:focus {
+            border-color: #3498db;
+        }
 
 .auth-button {
     padding: 0.75rem;
     background-color: #2c3e50;
-    color: white;
+    color: #fff;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     cursor: pointer;
     font-size: 1rem;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 
     .auth-button:hover {
@@ -41,10 +68,26 @@
     border: none;
     color: #3498db;
     cursor: pointer;
+    font-size: 0.95rem;
     text-decoration: underline;
+    align-self: center;
+    transition: color 0.2s ease;
 }
+
+    .auth-toggle:hover {
+        color: #1d6fa5;
+    }
 
 .error-message {
     color: #e74c3c;
     margin-bottom: 1rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.success-message {
+    color: #27ae60;
+    margin-bottom: 1rem;
+    font-weight: 500;
+    text-align: center;
 }
