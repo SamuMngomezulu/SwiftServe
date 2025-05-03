@@ -36,34 +36,53 @@ namespace SwiftServe.Controllers
         public async Task<IActionResult> CreateProduct([FromForm] ProductCreateDto productDto)
         {
             if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            // Validate that the CategoryID exists
-            if (!await _categoryRepo.CategoryExistsAsync(productDto.CategoryID))
             {
-                var validCategories = await _categoryRepo.GetAllCategoriesAsync();
                 return BadRequest(new
                 {
-                    message = $"Category with ID {productDto.CategoryID} does not exist.",
-                    validCategories
+                    message = "Invalid product data",
+                    errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
                 });
             }
 
-            var uploadResult = await _cloudinaryService.AddImageAsync(productDto.ImageFile);
-            if (uploadResult.Error != null)
-                return BadRequest(new { message = "Image upload failed", error = uploadResult.Error.Message });
-
-            var product = _mapper.Map<Product>(productDto);
-            product.ImageURL = uploadResult.SecureUrl.ToString();
-            product.ImagePublicID = uploadResult.PublicId;
-
-            await _productRepo.CreateProductAsync(product);
-
-            return CreatedAtAction(nameof(GetProductById), new { id = product.ProductID }, new
+            try
             {
-                message = "Product created successfully",
-                product
-            });
+                // Validate that the CategoryID exists
+                if (!await _categoryRepo.CategoryExistsAsync(productDto.CategoryID))
+                {
+                    var validCategories = await _categoryRepo.GetAllCategoriesAsync();
+                    return BadRequest(new
+                    {
+                        message = $"Category with ID {productDto.CategoryID} does not exist.",
+                        validCategories
+                    });
+                }
+
+                var uploadResult = await _cloudinaryService.AddImageAsync(productDto.ImageFile);
+                if (uploadResult.Error != null)
+                    return BadRequest(new { message = "Image upload failed", error = uploadResult.Error.Message });
+
+                var product = _mapper.Map<Product>(productDto);
+                product.ImageURL = uploadResult.SecureUrl.ToString();
+                product.ImagePublicID = uploadResult.PublicId;
+
+                await _productRepo.CreateProductAsync(product);
+
+                return CreatedAtAction(nameof(GetProductById), new { id = product.ProductID }, new
+                {
+                    message = "Product created successfully",
+                    product
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Error creating product",
+                    error = ex.Message
+                });
+            }
         }
 
         [Authorize(Roles = "Super User, Admin")]

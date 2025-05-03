@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SwiftServe.DTOs
 {
@@ -13,7 +14,8 @@ namespace SwiftServe.DTOs
         public string? ProductDescription { get; set; }
 
         [Required(ErrorMessage = "Price is required.")]
-        [Range(0.01, 9999999.99, ErrorMessage = "Price must be greater than 0.01")]
+        [Range(0.01, 10000.00, ErrorMessage = "Price must be greater than 0.01")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal ProductPrice { get; set; }
 
         [Required(ErrorMessage = "Product image is required.")]

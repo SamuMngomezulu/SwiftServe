@@ -13,6 +13,14 @@ using System.Text;
 using SwiftServe.Settings;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
+using System.Globalization;
+
+
+// Add this at the beginning of your Program.cs
+var cultureInfo = new CultureInfo("en-US");
+cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 var builder = WebApplication.CreateBuilder(args);
 
