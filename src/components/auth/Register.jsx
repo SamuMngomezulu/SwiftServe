@@ -47,19 +47,19 @@ const Register = ({ onRegisterSuccess }) => {
             if (result.success) {
                 setSuccessMessage('Registration successful! Redirecting to login...');
                 setTimeout(() => {
-                    onRegisterSuccess(); // switch to login view
                     navigate('/login', {
                         state: {
                             registeredEmail: formData.email,
                             successMessage: 'Registration successful! Please login.'
                         }
                     });
+                    if (onRegisterSuccess) onRegisterSuccess();
                 }, 2000);
             } else {
-                setError(result.message || 'Registration failed');
+                setError(result.message || 'Registration failed. Please try again.');
             }
         } catch (err) {
-            setError('An unexpected error occurred');
+            setError('An unexpected error occurred. Please try again.');
         } finally {
             setIsLoading(false);
         }

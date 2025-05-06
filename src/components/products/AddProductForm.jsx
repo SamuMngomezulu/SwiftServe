@@ -18,8 +18,17 @@ const AddProductForm = ({ onSuccess }) => {
     const [categories, setCategories] = useState([]);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [quantityInput, setQuantityInput] = useState('');
+
 
     const isAdminOrSuperUser = hasRole(ROLE_KEYS.SUPER_USER) || hasRole(ROLE_KEYS.ADMIN);
+
+    useEffect(() => {
+        setFormData(prev => ({
+            ...prev,
+            IsAvailable: parseInt(prev.ProductStockQuantity) > 0
+        }));
+    }, [formData.ProductStockQuantity]);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -67,6 +76,15 @@ const AddProductForm = ({ onSuccess }) => {
 
     const handleChange = (e) => {
         const { name, value, type, checked, files } = e.target;
+
+        if (name === 'ProductStockQuantity') {
+            const parsedValue = parseInt(value) || 1;  // Fallback to 1 if invalid
+            setFormData(prev => ({
+                ...prev,
+                [name]: Math.max(1, parsedValue)  // Ensures value is never below 1
+            }));
+            return;
+        }
 
         if (name === 'ProductPrice') {
             handlePriceChange(value);
@@ -120,20 +138,14 @@ const AddProductForm = ({ onSuccess }) => {
             return 'Price can have maximum 2 decimal places';
         }
 
-        // Quantity validation
+       
         const quantity = parseInt(ProductStockQuantity);
         if (isNaN(quantity)) {
             return 'Quantity must be a valid number.';
         }
-        if (quantity < 0) {
+        if (quantity < 0) {  // Only block negatives
             return 'Quantity cannot be negative.';
         }
-
-        if (!categories.some(cat => cat.categoryID === parseInt(CategoryID))) {
-            return 'Please select a valid category.';
-        }
-
-        return '';
     };
 
     const handleSubmit = async (e) => {
@@ -304,11 +316,34 @@ const AddProductForm = ({ onSuccess }) => {
                         min="0"
                         step="1"
                         name="ProductStockQuantity"
-                        value={formData.ProductStockQuantity}
-                        onChange={handleChange}
+                        value={quantityInput}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setQuantityInput(value); 
+
+                      
+                            if (value === '' || /^[0-9]+$/.test(value)) {
+                                setFormData(prev => ({
+                                    ...prev,
+                                    ProductStockQuantity: value === '' ? 0 : parseInt(value)
+                                }));
+                            }
+                        }}
+                        onBlur={() => {
+                            // When field loses focus, clean up empty value
+                            if (quantityInput === '') {
+                                setQuantityInput('0');
+                                setFormData(prev => ({
+                                    ...prev,
+                                    ProductStockQuantity: 0
+                                }));
+                            }
+                        }}
                         required
                     />
+                    <small className="input-hint">Enter stock quantity (0 for out of stock)</small>
                 </div>
+                
 
                 <div className="form-group">
                     <label>Image</label>

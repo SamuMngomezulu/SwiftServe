@@ -13,13 +13,21 @@
 
 .product-image-container {
     height: 200px;
+    width: 100%;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 10px;
 }
 
 .product-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
 }
 
 .product-details {
@@ -104,3 +112,38 @@
     .add-to-cart-btn:hover {
         background-color: #2980b9;
     }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    gap: 0.5rem;
+}
+
+.pagination-button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    background-color: white;
+    color: #3498db;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s;
+}
+
+    .pagination-button:hover:not(:disabled) {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .pagination-button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .pagination-button.active {
+        background-color: #3498db;
+        color: white;
+        font-weight: bold;
+    }
+
+

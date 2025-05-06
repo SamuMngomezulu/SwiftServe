@@ -86,3 +86,11 @@
         background-color: #95a5a6;
         cursor: not-allowed;
     }
+
+
+.input-hint {
+    display: block;
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
