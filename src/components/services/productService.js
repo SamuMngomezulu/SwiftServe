@@ -2,7 +2,7 @@ import api from './api';
 
 export const getCategories = async () => {
     try {
-        const response = await api.get('/category'); // Changed from '/categories'
+        const response = await api.get('/category'); 
         return response.data?.data || [];
     } catch (error) {
         console.error('Error fetching categories:', error);
@@ -14,15 +14,15 @@ export const getProducts = async () => {
     try {
         const response = await api.get('/products');
 
-        // Handle both possible response formats
+        
         if (response.data?.products) {
-            // If products is an object, convert to array
+          
             if (typeof response.data.products === 'object' && !Array.isArray(response.data.products)) {
                 return Object.values(response.data.products);
             }
             return response.data.products;
         }
-        return []; // Default empty array
+        return []; 
     } catch (error) {
         console.error('Error fetching products:', error);
         throw error;

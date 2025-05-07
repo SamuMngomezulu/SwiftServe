@@ -49,7 +49,7 @@ const AddProductForm = ({ onSuccess }) => {
     }, []);
 
     const handlePriceChange = (value) => {
-        // Remove any non-digit characters except decimal point
+        
         let sanitizedValue = value.replace(/[^0-9.]/g, '');
 
         // Ensure only one decimal point
@@ -58,12 +58,12 @@ const AddProductForm = ({ onSuccess }) => {
             sanitizedValue = parts[0] + '.' + parts.slice(1).join('');
         }
 
-        // Limit to 2 decimal places
+       
         if (parts.length > 1 && parts[1].length > 2) {
             sanitizedValue = parts[0] + '.' + parts[1].substring(0, 2);
         }
 
-        // Prevent leading zeros without decimal
+        
         if (parts[0].length > 1 && parts[0].startsWith('0') && !parts[0].includes('.')) {
             sanitizedValue = parts[0].substring(1);
         }
@@ -132,7 +132,7 @@ const AddProductForm = ({ onSuccess }) => {
             return 'Price must not exceed 10,000.';
         }
 
-        // Validate decimal places
+       
         const decimalPart = ProductPrice.split('.')[1];
         if (decimalPart && decimalPart.length > 2) {
             return 'Price can have maximum 2 decimal places';
@@ -143,7 +143,7 @@ const AddProductForm = ({ onSuccess }) => {
         if (isNaN(quantity)) {
             return 'Quantity must be a valid number.';
         }
-        if (quantity < 0) {  // Only block negatives
+        if (quantity < 0) {  
             return 'Quantity cannot be negative.';
         }
     };
@@ -164,12 +164,12 @@ const AddProductForm = ({ onSuccess }) => {
             data.append('ProductName', formData.ProductName);
             data.append('ProductDescription', formData.ProductDescription || '');
 
-            // Ensure ProductPrice is sent as a proper decimal number
+            
             const price = parseFloat(formData.ProductPrice);
             if (isNaN(price)) {
                 throw new Error('Invalid price format');
             }
-            data.append('ProductPrice', price.toString()); // Convert to string
+            data.append('ProductPrice', price.toString()); 
 
             data.append('CategoryID', formData.CategoryID);
             data.append('ProductStockQuantity', formData.ProductStockQuantity);
@@ -182,7 +182,7 @@ const AddProductForm = ({ onSuccess }) => {
                 }
             });
 
-            // Use the response data if needed
+            
             const createdProduct = response.data;
             console.log('Created product:', createdProduct);
 

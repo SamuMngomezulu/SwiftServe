@@ -2,10 +2,10 @@ import axios from 'axios';
 
 const api = axios.create({
     baseURL: 'http://localhost:5247/api',
-    // Removed default Content-Type header
+   
 });
 
-// Request interceptor to include token
+
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -16,12 +16,12 @@ api.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
-// Response interceptor for error handling
+
 api.interceptors.response.use((response) => {
     return response;
 }, (error) => {
     if (error.response?.status === 401) {
-        // Handle unauthorized access
+    
         localStorage.removeItem('token');
         window.location.href = '/login';
     }

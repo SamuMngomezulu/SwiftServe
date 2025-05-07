@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
                 setUser({
                     email: decoded.email,
                     userId: decoded.nameid,
-                    roles: [decoded.role],  // Assumes a single role for now
+                    roles: [decoded.role],  
                     name: decoded.name || ''
                 });
             } catch (error) {

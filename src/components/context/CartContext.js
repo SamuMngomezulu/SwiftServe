@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from 'react';
-import { useAuth } from './AuthContext'; // Adjust the import path as necessary
+import { useAuth } from './AuthContext';
 
 const CartContext = createContext();
 

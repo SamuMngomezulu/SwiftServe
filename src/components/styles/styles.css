@@ -43,7 +43,7 @@ button {
     margin: 0 auto;
 }
 
-/* Utility Classes */
+
 .text-center {
     text-align: center;
 }
@@ -52,7 +52,4 @@ button {
     display: none;
 }
 
-/* Font Awesome Icons (if using) */
-.fas {
-    font-family: 'Font Awesome';
-}
+
