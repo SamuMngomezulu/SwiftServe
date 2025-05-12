@@ -24,30 +24,29 @@ CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add DbContext
+
 builder.Services.AddDbContext<test_SwiftServeDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SwiftServeDB")));
 
-// Add AutoMapper
+
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Bind Cloudinary config
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 
-// Register services and repositories
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-// Configure JWT settings
+
 var jwtSettingsSection = builder.Configuration.GetSection("Jwt");
 builder.Services.Configure<JwtSettings>(jwtSettingsSection);
 var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
 
 
-// Add JWT authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -76,7 +75,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
 });
 
-// CORS configuration for React frontend at localhost:3000
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactDevClient", policy =>
@@ -87,7 +86,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add Controllers & Swagger
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -127,7 +126,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Apply CORS before authentication
+
 app.UseCors("ReactDevClient");
 
 app.UseAuthentication();
@@ -135,7 +134,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Apply migrations on startup
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<test_SwiftServeDbContext>();
