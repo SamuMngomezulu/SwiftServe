@@ -7,6 +7,7 @@ using SwiftServe.Models.Catalogue;
 using SwiftServe.Services;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using SwiftServe.Dtos;
 
 namespace SwiftServe.Controllers
 {
@@ -87,39 +88,62 @@ namespace SwiftServe.Controllers
 
         [Authorize(Roles = "Super User, Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductCreateDto productDto)
+        public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductUpdateDto productDto)
         {
-            var product = await _productRepo.GetProductByIdAsync(id);
-            if (product == null)
-                return NotFound();
-
-            if (!await _categoryRepo.CategoryExistsAsync(productDto.CategoryID))
+            try
             {
-                var validCategories = await _categoryRepo.GetAllCategoriesAsync();
-                return BadRequest(new
+                var product = await _productRepo.GetProductByIdAsync(id);
+                if (product == null)
+                    return NotFound(new { message = $"Product with ID {id} not found" });
+
+                if (!await _categoryRepo.CategoryExistsAsync(productDto.CategoryID))
                 {
-                    message = $"Category with ID {productDto.CategoryID} does not exist.",
-                    validCategories
+                    var validCategories = await _categoryRepo.GetAllCategoriesAsync();
+                    return BadRequest(new
+                    {
+                        message = $"Category with ID {productDto.CategoryID} does not exist.",
+                        validCategories
+                    });
+                }
+
+                // Handle image update only if a new image was provided
+                if (productDto.ImageFile != null)
+                {
+                    if (!string.IsNullOrEmpty(product.ImagePublicID))
+                        await _cloudinaryService.DeleteImageAsync(product.ImagePublicID);
+
+                    var uploadResult = await _cloudinaryService.AddImageAsync(productDto.ImageFile);
+                    if (uploadResult.Error != null)
+                        return BadRequest(new { message = "Image upload failed", error = uploadResult.Error.Message });
+
+                    product.ImageURL = uploadResult.SecureUrl.ToString();
+                    product.ImagePublicID = uploadResult.PublicId;
+                }
+
+                // Update other properties
+                product.ProductName = productDto.ProductName;
+                product.ProductDescription = productDto.ProductDescription;
+                product.ProductPrice = productDto.ProductPrice;
+                product.ProductStockQuantity = productDto.ProductStockQuantity;
+                product.IsAvailable = productDto.IsAvailable;
+                product.CategoryID = productDto.CategoryID;
+
+                await _productRepo.UpdateProductAsync(product);
+
+                return Ok(new
+                {
+                    message = "Product updated successfully",
+                    product = _mapper.Map<ProductBrowseDto>(product)
                 });
             }
-
-            if (productDto.ImageFile != null)
+            catch (Exception ex)
             {
-                if (!string.IsNullOrEmpty(product.ImagePublicID))
-                    await _cloudinaryService.DeleteImageAsync(product.ImagePublicID);
-
-                var uploadResult = await _cloudinaryService.AddImageAsync(productDto.ImageFile);
-                if (uploadResult.Error != null)
-                    return BadRequest(new { message = "Image upload failed", error = uploadResult.Error.Message });
-
-                product.ImageURL = uploadResult.SecureUrl.ToString();
-                product.ImagePublicID = uploadResult.PublicId;
+                return StatusCode(500, new
+                {
+                    message = "Error updating product",
+                    error = ex.Message
+                });
             }
-
-            _mapper.Map(productDto, product);
-            await _productRepo.UpdateProductAsync(product);
-
-            return Ok(new { message = "Product updated successfully", product });
         }
 
         [Authorize(Roles = "Super User, Admin")]
