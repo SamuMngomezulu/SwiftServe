@@ -1,0 +1,215 @@
+/* Container for the product table */
+.product-table-container {
+    padding: 2rem;
+    background-color: var(--secondary-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+    max-width: 100%;
+    border: 1px solid var(--border-color);
+}
+
+/* Styling the table */
+.product-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: var(--font-color);
+}
+
+    /* Table Header */
+    .product-table thead {
+        background-color: var(--primary-color);
+        color: var(--secondary-color);
+    }
+
+    .product-table th,
+    .product-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .product-table th {
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+    }
+
+    .product-table td {
+        font-size: 0.9rem;
+        vertical-align: middle;
+    }
+
+/* Table Image */
+.table-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+}
+
+/* Button Styles */
+.edit-btn,
+.delete-btn {
+    padding: 6px 12px;
+    margin-right: 8px;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.edit-btn {
+    background-color: var(--accent-color);
+    color: var(--secondary-color);
+}
+
+    .edit-btn:hover {
+        background-color: #219150;
+        transform: scale(1.05); /* Slight scale effect on hover */
+    }
+
+.delete-btn {
+    background-color: #e74c3c;
+    color: var(--secondary-color);
+}
+
+    .delete-btn:hover {
+        background-color: #c0392b;
+        transform: scale(1.05); /* Slight scale effect on hover */
+    }
+
+/* Error Message */
+.error-message {
+    color: #e74c3c;
+    font-weight: 500;
+    margin: 1rem 0;
+}
+
+/* Modal Styles */
+.edit-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal content */
+.edit-modal-content {
+    background-color: var(--secondary-color);
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border-color);
+}
+
+/* Modal header */
+.edit-modal h2 {
+    margin-top: 0;
+    color: var(--font-color);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--font-color);
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="number"],
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background-color: #fafafa;
+        font-family: inherit;
+        font-size: 0.95rem;
+        color: var(--font-color);
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .form-group textarea {
+        height: 100px;
+        resize: vertical;
+    }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="number"]:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            background-color: var(--gray-light);
+            border-color: var(--accent-color);
+        }
+
+/* Checkbox */
+.checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.checkbox input {
+    margin-right: 10px;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 1.5rem;
+}
+
+.save-btn,
+.cancel-btn {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.save-btn {
+    background-color: var(--accent-color);
+    color: var(--secondary-color);
+}
+
+.cancel-btn {
+    background-color: #e74c3c;
+    color: var(--secondary-color);
+}
+
+.save-btn:hover {
+    background-color: #219150;
+    transform: scale(1.05); /* Slight scale effect on hover */
+}
+
+.cancel-btn:hover {
+    background-color: #c0392b;
+    transform: scale(1.05); /* Slight scale effect on hover */
+}

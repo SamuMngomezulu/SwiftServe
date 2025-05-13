@@ -55,7 +55,8 @@ const Register = ({ onRegisterSuccess }) => {
                     });
                     if (onRegisterSuccess) onRegisterSuccess();
                 }, 2000);
-            } else {
+            }
+else {
                 setError(result.message || 'Registration failed. Please try again.');
             }
         } catch (err) {

@@ -1,11 +1,15 @@
+﻿// Layout.jsx
 import { useAuth } from '../context/AuthContext';
-import Header from './Header';
+import Sidebar from '../products/Sidebar';
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';  
+import { useEffect, useState } from 'react';
+import '../styles/layout.css';
+
 
 const Layout = ({ children }) => {
     const { isAuthenticated } = useAuth();
     const navigate = useNavigate();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -14,12 +18,18 @@ const Layout = ({ children }) => {
     }, [isAuthenticated, navigate]);
 
     return (
-        <>
-            <Header />
+        <div className="app-container">
+            <Sidebar className={sidebarOpen ? 'open' : ''} />
             <main className="main-content">
+                <button
+                    className="mobile-menu-btn"
+                    onClick={() => setSidebarOpen(!sidebarOpen)}
+                >
+                    ☰
+                </button>
                 {children}
             </main>
-        </>
+        </div>
     );
 };
 

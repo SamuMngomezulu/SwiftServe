@@ -1,118 +1,142 @@
+/* Main product card styling */
 .product-card {
-    background: white;
-    border-radius: 8px;
+    background: #ffffff;
+    border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    margin: 0.5rem; /* Added spacing between product cards */
 }
 
+    /* Hover effect for product card */
     .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transform: translateY(-4px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
     }
 
+/* Product image container */
 .product-image-container {
     height: 200px;
     width: 100%;
-    overflow: hidden;
+    background-color: #f5f5f5;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f8f9fa;
-    padding: 10px;
+    padding: 1rem; /* Consistent padding */
 }
 
+/* Product image properties */
 .product-image {
-    width: auto;
-    height: auto;
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
 }
 
+/* Product details section */
 .product-details {
     padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Added gap between product details */
 }
 
+/* Product name styling */
 .product-name {
     font-size: 1.1rem;
-    margin: 0 0 0.5rem 0;
-    color: #2c3e50;
+    font-weight: 600;
+    color: var(--font-color);
+    margin-bottom: 0.5rem;
 }
 
+/* Product description with truncation */
 .product-description {
     font-size: 0.9rem;
-    color: #666;
-    margin: 0 0 0.75rem 0;
+    color: var(--gray-dark);
+    margin-bottom: 0.75rem;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
+/* Product price styling */
 .product-price {
-    font-weight: bold;
-    color: #e74c3c;
-    margin: 0.5rem 0;
     font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
 }
 
+/* Product meta info section */
 .product-meta {
     display: flex;
     justify-content: space-between;
     font-size: 0.8rem;
-    color: #7f8c8d;
-    margin: 0.5rem 0;
+    color: var(--gray);
+    margin-bottom: 0.5rem;
 }
 
+/* Product status label */
 .product-status {
     display: inline-block;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-size: 0.75rem;
-    font-weight: bold;
+    font-weight: 500;
     margin-top: 0.5rem;
+    text-transform: uppercase;
 }
 
     .product-status.available {
-        background-color: #d4edda;
-        color: #155724;
+        background-color: #e6f4ea;
+        color: #1e4620;
     }
 
     .product-status.out-of-stock {
-        background-color: #f8d7da;
+        background-color: #fcebea;
         color: #721c24;
     }
 
+/* Product actions section */
 .product-actions {
     display: flex;
     gap: 0.5rem;
-    margin-top: 1rem;
+    margin-top: auto;
+    align-items: center;
 }
 
+/* Quantity input for product */
 .quantity-input {
     width: 60px;
     padding: 0.5rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     text-align: center;
+    background-color: #fafafa;
+    color: var(--font-color);
 }
 
+/* Add to cart button styling */
 .add-to-cart-btn {
     flex: 1;
     padding: 0.5rem;
-    background-color: #3498db;
-    color: white;
+    background-color: var(--accent-color);
+    color: var(--secondary-color);
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
+    font-weight: 500;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s ease;
 }
 
     .add-to-cart-btn:hover {
-        background-color: #2980b9;
+        background-color: #219150;
     }
 
+/* Pagination container */
 .pagination {
     display: flex;
     justify-content: center;
@@ -120,30 +144,30 @@
     gap: 0.5rem;
 }
 
+/* Pagination button styling */
 .pagination-button {
     padding: 0.5rem 1rem;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     background-color: white;
-    color: #3498db;
+    color: var(--accent-color);
     cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.3s;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
     .pagination-button:hover:not(:disabled) {
-        background-color: #3498db;
+        background-color: var(--accent-color);
         color: white;
     }
 
     .pagination-button:disabled {
-        opacity: 0.5;
+        opacity: 0.4;
         cursor: not-allowed;
     }
 
     .pagination-button.active {
-        background-color: #3498db;
+        background-color: var(--accent-color);
         color: white;
         font-weight: bold;
     }
-
-

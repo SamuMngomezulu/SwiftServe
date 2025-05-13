@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
                 setUser({
                     email: decoded.email,
                     userId: decoded.nameid,
-                    roles: [decoded.role],  
+                    roles: [decoded.role],
                     name: decoded.name || ''
                 });
             } catch (error) {
@@ -77,3 +77,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+export { ROLE_KEYS };

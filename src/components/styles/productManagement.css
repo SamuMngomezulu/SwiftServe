@@ -1,0 +1,67 @@
+/* Main container for product management */
+.product-management-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: var(--secondary-color);
+    color: var(--font-color);
+}
+
+/* Header styles for product management section */
+.product-management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+/* Button to toggle product addition section */
+.add-product-toggle-btn {
+    background-color: var(--accent-color);
+    color: var(--secondary-color);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+    .add-product-toggle-btn:hover {
+        background-color: #219150;
+        transform: scale(1.05); /* Slight scale effect on hover */
+    }
+
+/* Product addition section styles */
+.add-product-section {
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background-color: #fefefe;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+    .add-product-section:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        border-color: var(--accent-color); /* Highlight the section on hover */
+    }
+
+/* Responsive design: Ensure fluidity for mobile */
+@media (max-width: 768px) {
+    .product-management-container {
+        padding: 1rem;
+    }
+
+    .add-product-toggle-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.2rem;
+    }
+
+    .add-product-section {
+        padding: 1.5rem;
+    }
+}

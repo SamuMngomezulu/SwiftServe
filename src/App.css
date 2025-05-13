@@ -1,38 +1,101 @@
+/* Root variables for consistent design */
+:root {
+    --accent-color: #2ecc71; /* Green accent */
+    --accent-hover: #27ae60; /* Darker green on hover */
+    --gray-dark: #333; /* Dark gray text */
+    --gray-light: #f5f5f5; /* Light gray background */
+    --text-light: #777; /* Light gray text */
+    --bg-dark: #1a1a1a; /* Dark background */
+    --white: #ffffff; /* White color for text */
+}
+
+/* Main App container */
 .App {
-  text-align: center;
+    text-align: center;
+    background-color: var(--bg-dark);
+    color: var(--white);
+    height: 100vh; /* Full height */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem;
 }
 
+/* Logo styles */
 .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+    height: 40vmin;
+    pointer-events: none;
+    transition: transform 0.3s ease-in-out;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
+    .App-logo:hover {
+        transform: rotate(180deg);
+    }
 
+/* Header styles */
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: var(--bg-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: var(--white);
+    padding: 0 1rem;
 }
 
+    .App-header h1 {
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        font-weight: 600;
+        color: var(--white);
+    }
+
+/* Link styles */
 .App-link {
-  color: #61dafb;
+    color: var(--accent-color);
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
 }
 
+    .App-link:hover {
+        color: var(--accent-hover);
+        background-color: rgba(0, 0, 0, 0.1); /* subtle background on hover */
+    }
+
+/* Logo spin animation */
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .App-header {
+        font-size: calc(12px + 2vmin);
+    }
+
+    .App-logo {
+        height: 30vmin; /* Smaller logo on smaller screens */
+    }
+
+    .App-header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .App-link {
+        font-size: 1rem;
+    }
 }

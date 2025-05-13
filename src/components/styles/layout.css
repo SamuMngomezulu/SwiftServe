@@ -1,0 +1,71 @@
+:root {
+    --accent-color: #2ecc71; /* Green */
+    --background: #ffffff;
+    --gray-light: #f5f5f5;
+    --gray-dark: #7f8c8d;
+    --font-color: #1a1a1a;
+    --border-color: #e0e0e0;
+}
+
+/* Main app container layout */
+.app-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: var(--gray-light);
+    flex-direction: column; /* Ensures mobile-first structure */
+}
+
+/* Main content section */
+.main-content {
+    flex: 1;
+    padding: 3rem 2rem;
+    margin-left: 250px; /* Sidebar width for large screens */
+    background-color: var(--background);
+    color: var(--font-color);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem; /* Spacing between main sections */
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 2rem 1rem;
+        gap: 1.5rem; /* Slightly reduced gap on mobile */
+    }
+
+    .sidebar {
+        transform: translateX(-100%); /* Sidebar hidden on mobile */
+        transition: transform 0.3s ease;
+    }
+
+        .sidebar.open {
+            transform: translateX(0); /* Sidebar appears when 'open' */
+        }
+}
+
+/* Mobile Menu Button for small screens */
+.mobile-menu-btn {
+    display: none;
+    background: var(--font-color);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+    .mobile-menu-btn:hover {
+        background-color: var(--accent-color);
+    }
+
+/* Mobile-specific display */
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: inline-block; /* Mobile menu button visible on small screens */
+    }
+}
