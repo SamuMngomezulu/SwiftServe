@@ -213,3 +213,77 @@
     background-color: #c0392b;
     transform: scale(1.05); /* Slight scale effect on hover */
 }
+
+/* Add to productTable.css */
+
+.search-container {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.search-input {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 300px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+}
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--accent-color);
+    }
+
+.table-wrapper {
+    overflow-x: auto;
+    width: 100%;
+}
+
+/* Ensure consistent cell sizing */
+.product-table {
+    table-layout: fixed;
+}
+
+    .product-table td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+        /* Make product names wrap but maintain cell size */
+        .product-table td:nth-child(2) {
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .search-container {
+        justify-content: center;
+    }
+
+    .search-input {
+        max-width: 100%;
+    }
+
+    .product-table th,
+    .product-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    .table-img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .edit-btn,
+    .delete-btn {
+        padding: 4px 8px;
+        margin-right: 4px;
+        font-size: 0.8rem;
+    }
+}

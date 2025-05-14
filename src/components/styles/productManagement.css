@@ -1,21 +1,26 @@
-/* Main container for product management */
+
+/* Root Container */
 .product-management-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
     background-color: var(--secondary-color);
     color: var(--font-color);
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* Header styles for product management section */
+/* Header Section */
 .product-management-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
+    width: 100%;
 }
 
-/* Button to toggle product addition section */
+/* Toggle Button */
 .add-product-toggle-btn {
     background-color: var(--accent-color);
     color: var(--secondary-color);
@@ -23,33 +28,42 @@
     padding: 0.75rem 1.5rem;
     border-radius: 6px;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.2s ease;
+    min-width: 180px;
+    text-align: center;
+    white-space: nowrap;
 }
 
     .add-product-toggle-btn:hover {
         background-color: #219150;
-        transform: scale(1.05); /* Slight scale effect on hover */
+        transform: scale(1.05);
     }
 
-/* Product addition section styles */
-.add-product-section {
-    margin-bottom: 2rem;
-    padding: 2rem;
-    background-color: #fefefe;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    border: 1px solid var(--border-color);
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+/* Search */
+.search-container {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
 }
 
-    .add-product-section:hover {
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-        border-color: var(--accent-color); /* Highlight the section on hover */
+.search-input {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    width: 100%;
+    max-width: 300px;
+}
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--accent-color);
     }
 
-/* Responsive design: Ensure fluidity for mobile */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .product-management-container {
         padding: 1rem;
@@ -61,7 +75,21 @@
         font-size: 1.2rem;
     }
 
-    .add-product-section {
-        padding: 1.5rem;
+    .search-container {
+        justify-content: center;
+    }
+
+    .search-input {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .add-product-toggle-btn {
+        width: 100%;
+        font-size: 1.1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
     }
 }

@@ -15,6 +15,8 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     max-width: 800px;
     margin: 2rem auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
     .add-product-form h2 {
@@ -96,24 +98,45 @@
     color: var(--text-dark);
 }
 
-.add-product-form button {
-    width: 100%;
-    padding: 0.85rem;
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+/* Responsive button group */
+.form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
 }
 
-    .add-product-form button:hover {
-        background-color: var(--accent-hover);
+    .form-buttons button {
+        flex: 1 1 200px;
+        padding: 0.85rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
     }
 
-    .add-product-form button:disabled {
+    .form-buttons .submit-btn {
+        background-color: var(--accent-color);
+        color: white;
+    }
+
+        .form-buttons .submit-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+    .form-buttons .cancel-btn {
+        background-color: var(--danger-color);
+        color: white;
+    }
+
+        .form-buttons .cancel-btn:hover {
+            background-color: #c0392b;
+        }
+
+    .form-buttons button:disabled {
         background-color: #bfc5c5;
         cursor: not-allowed;
     }
@@ -132,7 +155,13 @@
             flex: 1 1 100%;
         }
 
-    .add-product-form button {
-        font-size: 0.95rem;
+    .form-buttons {
+        flex-direction: column;
+        align-items: stretch;
     }
+
+        .form-buttons button {
+            width: 100%;
+            font-size: 0.95rem;
+        }
 }

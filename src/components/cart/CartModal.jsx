@@ -1,8 +1,6 @@
 import { useCart } from '../context/CartContext';
 import '../styles/cartModal.css';
 
-;
-
 const CartModal = () => {
     const {
         cartItems,
@@ -45,30 +43,43 @@ const CartModal = () => {
                             <ul className="cart-items">
                                 {cartItems.map(item => (
                                     <li key={item.id} className="cart-item">
-                                        <img
-                                            src={item.image}
-                                            alt={item.name}
-                                            className="cart-item-image"
-                                        />
-                                        <div className="cart-item-details">
-                                            <h4>{item.name}</h4>
-                                            <p>R{item.price.toFixed(2)}</p>
-                                            <div className="cart-item-actions">
-                                                <input
-                                                    type="number"
-                                                    min="1"
-                                                    value={item.quantity}
-                                                    onChange={(e) =>
-                                                        updateQuantity(item.id, parseInt(e.target.value) || 1)
-                                                    }
-                                                />
+                                        <div className="cart-item-main">
+                                            <img
+                                                src={item.image}
+                                                alt={item.name}
+                                                className="cart-item-image"
+                                            />
+                                            <div className="cart-item-details">
+                                                <h4>{item.name}</h4>
+                                                {/* Removed unit price */}
+                                            </div>
+                                        </div>
+                                        <div className="cart-item-price-actions">
+                                            <div className="quantity-control">
                                                 <button
-                                                    onClick={() => removeFromCart(item.id)}
-                                                    className="remove-item"
+                                                    className="quantity-button"
+                                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                                    disabled={item.quantity <= 1}
                                                 >
-                                                    Remove
+                                                    -
+                                                </button>
+                                                <span className="quantity-display">{item.quantity}</span>
+                                                <button
+                                                    className="quantity-button"
+                                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                                >
+                                                    +
                                                 </button>
                                             </div>
+                                            <span className="cart-item-price">
+                                                R{(item.price * item.quantity).toFixed(2)}
+                                            </span>
+                                            <button
+                                                onClick={() => removeFromCart(item.id)}
+                                                className="remove-item"
+                                            >
+                                                Remove
+                                            </button>
                                         </div>
                                     </li>
                                 ))}
