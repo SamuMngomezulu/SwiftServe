@@ -25,6 +25,21 @@ namespace SwiftServe.Implementations
 
         public async Task<Product?> GetProductByIdAsync(int id)
         {
+            var zeroQuantityProducts = await _context.Products
+          .Where(p => p.ProductStockQuantity <= 0 && p.IsAvailable)
+          .ToListAsync();
+
+            foreach (var product in zeroQuantityProducts)
+            {
+                product.IsAvailable = false;
+                _context.Products.Update(product);
+            }
+
+            if (zeroQuantityProducts.Any())
+            {
+                await _context.SaveChangesAsync();
+            }
+
             return await _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.ProductSuppliers)

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using SwiftServe.Dtos;
-using SwiftServe.DTOs;
-using SwiftServe.Models.Catalogue;
+using SwiftServe.Models.Cart;
 
 namespace SwiftServe.Mappings
 {
@@ -9,31 +8,34 @@ namespace SwiftServe.Mappings
     {
         public MappingProfile()
         {
-            // ProductCreateDto → Product
-            CreateMap<ProductCreateDto, Product>()
-                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductName))
-                .ForMember(dest => dest.ProductDescription, opt => opt.MapFrom(src => src.ProductDescription))
-                .ForMember(dest => dest.ProductPrice, opt => opt.MapFrom(src => src.ProductPrice))
-                .ForMember(dest => dest.ProductStockQuantity, opt => opt.MapFrom(src => src.ProductStockQuantity))
-                .ForMember(dest => dest.IsAvailable, opt => opt.MapFrom(src => src.IsAvailable))
-                .ForMember(dest => dest.CategoryID, opt => opt.MapFrom(src => src.CategoryID))
-                .ForMember(dest => dest.ImageURL, opt => opt.Ignore())
-                .ForMember(dest => dest.ImagePublicID, opt => opt.Ignore());
+            // Cart mappings
+            CreateMap<Cart, CartResponseDto>()
+                .ForMember(dest => dest.CartID, opt => opt.MapFrom(src => src.CartID))
+                .ForMember(dest => dest.UserID, opt => opt.MapFrom(src => src.UserID))
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.CartItems));
 
-            // Product → ProductBrowseDto
-            CreateMap<Product, ProductBrowseDto>()
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName));
+            CreateMap<CartItem, CartItemResponseDto>()
+                .ForMember(dest => dest.CartItemID, opt => opt.MapFrom(src => src.CartItemID))
+                .ForMember(dest => dest.ProductID, opt => opt.MapFrom(src => src.ProductID))
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.ProductName))
+                .ForMember(dest => dest.ImageURL, opt => opt.MapFrom(src => src.Product.ImageURL))
+                .ForMember(dest => dest.ProductPrice, opt => opt.MapFrom(src => src.Product.ProductPrice))
+                .ForMember(dest => dest.LineTotal, opt => opt.MapFrom(src => src.LineTotal));
 
-            CreateMap<ProductUpdateDto, Product>()
-                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductName))
-                .ForMember(dest => dest.ProductDescription, opt => opt.MapFrom(src => src.ProductDescription))
-                .ForMember(dest => dest.ProductPrice, opt => opt.MapFrom(src => src.ProductPrice))
-                .ForMember(dest => dest.ProductStockQuantity, opt => opt.MapFrom(src => src.ProductStockQuantity))
-                .ForMember(dest => dest.IsAvailable, opt => opt.MapFrom(src => src.IsAvailable))
-                .ForMember(dest => dest.CategoryID, opt => opt.MapFrom(src => src.CategoryID))
-                .ForMember(dest => dest.ImageURL, opt => opt.Ignore())
-                .ForMember(dest => dest.ImagePublicID, opt => opt.Ignore());
+            CreateMap<AddToCartRequestDto, CartItem>()
+                .ForMember(dest => dest.ProductID, opt => opt.MapFrom(src => src.ProductID))
+                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.DateAdded, opt => opt.Ignore())
+                .ForMember(dest => dest.Cart, opt => opt.Ignore())
+                .ForMember(dest => dest.Product, opt => opt.Ignore());
 
+            CreateMap<UpdateCartItemRequestDto, CartItem>()
+                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.CartItemID, opt => opt.Ignore())
+                .ForMember(dest => dest.ProductID, opt => opt.Ignore())
+                .ForMember(dest => dest.DateAdded, opt => opt.Ignore())
+                .ForMember(dest => dest.Cart, opt => opt.Ignore())
+                .ForMember(dest => dest.Product, opt => opt.Ignore());
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SwiftServe.Data;
 using SwiftServe.Interfaces;
-using SwiftServe.Models;
 using SwiftServe.Models.Catalogue;
 
 namespace SwiftServe.Implementations

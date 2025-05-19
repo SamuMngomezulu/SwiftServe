@@ -1,7 +1,5 @@
 ﻿using SwiftServe.Dtos;
-using SwiftServe.Models;
-using SwiftServe.Models.User.User;
-using System.Threading.Tasks;
+using SwiftServe.Models.Users;
 
 namespace SwiftServe.Interfaces
 {

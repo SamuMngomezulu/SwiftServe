@@ -5,7 +5,7 @@ using BCrypt.Net;
 using SwiftServe.Data;
 using SwiftServe.Models;
 using SwiftServe.Dtos;
-using SwiftServe.Models.User.User;
+using SwiftServe.Models.Users;
 using SwiftServe.Interfaces;
 using System.Security.Claims;
 

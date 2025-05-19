@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using SwiftServe.DTOs;
 using SwiftServe.Interfaces;
 using SwiftServe.Models.Catalogue;
 using SwiftServe.Services;
-using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using SwiftServe.Dtos;
 
@@ -179,6 +177,7 @@ namespace SwiftServe.Controllers
             });
         }
 
+        // ProductController.cs - Update GetAllProducts method
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllProducts()

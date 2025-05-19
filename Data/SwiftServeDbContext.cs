@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SwiftServe.Models.User.User;
+using SwiftServe.Models.Users;
 using SwiftServe.Models.Catalogue;
+using SwiftServe.Models.Cart;
 
 
 namespace SwiftServe.Data
@@ -16,6 +17,9 @@ namespace SwiftServe.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<ProductSupplier> ProductSuppliers { get; set; }
+
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -71,6 +75,37 @@ namespace SwiftServe.Data
                 .HasOne(ps => ps.Supplier)
                 .WithMany(s => s.ProductSuppliers)
                 .HasForeignKey(ps => ps.SupplierID);
+
+            // Cart and CartItem configuration
+            modelBuilder.Entity<Cart>()
+                .HasOne(c => c.User)
+                .WithMany()
+                .HasForeignKey(c => c.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Cart-CartItem one-to-many
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.Cart)
+                .WithMany(c => c.CartItems)
+                .HasForeignKey(ci => ci.CartID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // CartItem-Product many-to-one
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci => ci.Product)
+                .WithMany()
+                .HasForeignKey(ci => ci.ProductID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Set primary key for CartItem
+            modelBuilder.Entity<CartItem>()
+                .HasKey(ci => ci.CartItemID);
+
+            // Index for active carts
+            modelBuilder.Entity<Cart>()
+                .HasIndex(c => new { c.UserID, c.IsActive })
+                .HasFilter("[IsActive] = 1");
         }
     }
+
 }

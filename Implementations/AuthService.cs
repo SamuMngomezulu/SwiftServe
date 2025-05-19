@@ -3,13 +3,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SwiftServe.Dtos;
 using SwiftServe.Interfaces;
-using SwiftServe.Models.User.User;
 using SwiftServe.Settings;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SwiftServe.Implementations
 {

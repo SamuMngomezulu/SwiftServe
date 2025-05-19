@@ -2,9 +2,7 @@
 using SwiftServe.Data;
 using SwiftServe.Dtos;
 using SwiftServe.Interfaces;
-using SwiftServe.Models;
-using SwiftServe.Models.User.User;
-using System.Threading.Tasks;
+using SwiftServe.Models.Users;
 
 namespace SwiftServe.Implementations
 {
