@@ -2,7 +2,6 @@
 using SwiftServe.Interfaces;
 using SwiftServe.Dtos;
 using System.Security.Claims;
-using SwiftServe.Dtos;
 
 namespace SwiftServe.Controllers
 {
@@ -20,7 +19,7 @@ namespace SwiftServe.Controllers
         private int? GetUserId()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            return userIdClaim != null ? int.Parse(userIdClaim.Value) : (int?)null;
+            return userIdClaim != null && int.TryParse(userIdClaim.Value, out var id) ? id : (int?)null;
         }
 
         [HttpGet]
@@ -28,7 +27,9 @@ namespace SwiftServe.Controllers
         {
             var userId = GetUserId();
             if (userId == null) return Unauthorized("User ID not found in token.");
-            return Ok(await _cartService.GetCartDtoAsync(userId.Value));
+
+            var cartDto = await _cartService.GetCartDtoAsync(userId.Value);
+            return Ok(cartDto);
         }
 
         [HttpGet("items")]
@@ -38,7 +39,8 @@ namespace SwiftServe.Controllers
             if (userId == null) return Unauthorized("User ID not found in token.");
 
             var cart = await _cartService.GetCartDtoAsync(userId.Value);
-            return Ok(cart.Items);
+            var items = cart?.Items ?? new List<CartItemResponseDto>();
+            return Ok(items);
         }
 
         [HttpGet("total")]
@@ -46,7 +48,9 @@ namespace SwiftServe.Controllers
         {
             var userId = GetUserId();
             if (userId == null) return Unauthorized("User ID not found in token.");
-            return Ok(await _cartService.GetTotalPriceAsync(userId.Value));
+
+            var total = await _cartService.GetTotalPriceAsync(userId.Value);
+            return Ok(total);
         }
 
         [HttpPost("add")]
@@ -58,7 +62,7 @@ namespace SwiftServe.Controllers
             try
             {
                 var cartItem = await _cartService.AddToCartAsync(userId.Value, request);
-                return CreatedAtAction(nameof(GetCartItems), cartItem);
+                return CreatedAtAction(nameof(GetCartItems), null, cartItem);
             }
             catch (ArgumentException ex)
             {
@@ -69,6 +73,9 @@ namespace SwiftServe.Controllers
         [HttpPut("update/{cartItemId}")]
         public async Task<ActionResult<CartItemResponseDto>> UpdateCartItem(int cartItemId, [FromBody] UpdateCartItemRequestDto request)
         {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized("User ID not found in token.");
+
             try
             {
                 var updatedItem = await _cartService.UpdateCartItemAsync(cartItemId, request);
@@ -84,6 +91,9 @@ namespace SwiftServe.Controllers
         [HttpDelete("remove/{cartItemId}")]
         public async Task<IActionResult> RemoveFromCart(int cartItemId)
         {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized("User ID not found in token.");
+
             var success = await _cartService.RemoveFromCartAsync(cartItemId);
             if (!success) return NotFound("Cart item not found");
             return NoContent();

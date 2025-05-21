@@ -41,6 +41,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IWalletService, WalletService>();
 
 
 var jwtSettingsSection = builder.Configuration.GetSection("Jwt");

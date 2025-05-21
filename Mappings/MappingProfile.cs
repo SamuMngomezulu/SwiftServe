@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
 using SwiftServe.Dtos;
-using SwiftServe.Models.Cart;
+using SwiftServe.DTOs;
+using SwiftServe.Models.Carts;
+using SwiftServe.Models.Catalogue;
+using SwiftServe.Models.Orders;
+using SwiftServe.Models.Users;
 
 namespace SwiftServe.Mappings
 {
@@ -8,6 +12,31 @@ namespace SwiftServe.Mappings
     {
         public MappingProfile()
         {
+
+            CreateMap<ProductCreateDto, Product>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductName))
+                .ForMember(dest => dest.ProductDescription, opt => opt.MapFrom(src => src.ProductDescription))
+                .ForMember(dest => dest.ProductPrice, opt => opt.MapFrom(src => src.ProductPrice))
+                .ForMember(dest => dest.ProductStockQuantity, opt => opt.MapFrom(src => src.ProductStockQuantity))
+                .ForMember(dest => dest.IsAvailable, opt => opt.MapFrom(src => src.IsAvailable))
+                .ForMember(dest => dest.CategoryID, opt => opt.MapFrom(src => src.CategoryID))
+                .ForMember(dest => dest.ImageURL, opt => opt.Ignore())
+                .ForMember(dest => dest.ImagePublicID, opt => opt.Ignore());
+
+            // Product → ProductBrowseDto
+            CreateMap<Product, ProductBrowseDto>()
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.CategoryName));
+
+            CreateMap<ProductUpdateDto, Product>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductName))
+                .ForMember(dest => dest.ProductDescription, opt => opt.MapFrom(src => src.ProductDescription))
+                .ForMember(dest => dest.ProductPrice, opt => opt.MapFrom(src => src.ProductPrice))
+                .ForMember(dest => dest.ProductStockQuantity, opt => opt.MapFrom(src => src.ProductStockQuantity))
+                .ForMember(dest => dest.IsAvailable, opt => opt.MapFrom(src => src.IsAvailable))
+                .ForMember(dest => dest.CategoryID, opt => opt.MapFrom(src => src.CategoryID))
+                .ForMember(dest => dest.ImageURL, opt => opt.Ignore())
+                .ForMember(dest => dest.ImagePublicID, opt => opt.Ignore());
+
             // Cart mappings
             CreateMap<Cart, CartResponseDto>()
                 .ForMember(dest => dest.CartID, opt => opt.MapFrom(src => src.CartID))
@@ -36,6 +65,31 @@ namespace SwiftServe.Mappings
                 .ForMember(dest => dest.DateAdded, opt => opt.Ignore())
                 .ForMember(dest => dest.Cart, opt => opt.Ignore())
                 .ForMember(dest => dest.Product, opt => opt.Ignore());
+
+            // Wallet mappings
+            CreateMap<Wallet, WalletDto>()
+                .ForMember(dest => dest.WalletID, opt => opt.MapFrom(src => src.WalletID))
+                .ForMember(dest => dest.UserID, opt => opt.MapFrom(src => src.UserID))
+                .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => src.Balance))
+                .ForMember(dest => dest.Transactions, opt => opt.MapFrom(src => src.Transactions));
+
+            CreateMap<Transaction, TransactionDto>()
+                .ForMember(dest => dest.TransactionID, opt => opt.MapFrom(src => src.TransactionID))
+                .ForMember(dest => dest.TransactionAmount, opt => opt.MapFrom(src => src.TransactionAmount))
+                .ForMember(dest => dest.TypeName, opt => opt.MapFrom(src => src.TransactionType.TypeName))
+                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.TransactionStatus.StatusName))
+                .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.TransactionDate))
+                .ForMember(dest => dest.OrderID, opt => opt.MapFrom(src => src.OrderID));
+
+            // Order mappings
+            CreateMap<Order, OrderDto>()
+                .ForMember(dest => dest.OrderID, opt => opt.MapFrom(src => src.OrderID))
+                .ForMember(dest => dest.CartID, opt => opt.MapFrom(src => src.CartID))
+                .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.OrderStatus.StatusName))
+                .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src => src.OrderDate))
+                .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.TotalAmount))
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Cart.CartItems));
+
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SwiftServe.Models.Users;
 using SwiftServe.Models.Catalogue;
-using SwiftServe.Models.Cart;
+using SwiftServe.Models.Carts;
+using SwiftServe.Models.Orders;
 
 
 namespace SwiftServe.Data
@@ -17,20 +18,40 @@ namespace SwiftServe.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<ProductSupplier> ProductSuppliers { get; set; }
-
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderStatus> OrderStatuses { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Seed predefined roles
+            //DB Seeding
+            modelBuilder.Entity<TransactionType>().HasData(
+                new TransactionType { TransactionTypeID = 1, TypeName = "Deposit" },
+                new TransactionType { TransactionTypeID = 2, TypeName = "Purchase" },
+                new TransactionType { TransactionTypeID = 3, TypeName = "Refund" }
+            );
+
+            modelBuilder.Entity<TransactionStatus>().HasData(
+                new TransactionStatus { TransactionStatusID = 1, StatusName = "Pending" },
+                new TransactionStatus { TransactionStatusID = 2, StatusName = "Completed" },
+                new TransactionStatus { TransactionStatusID = 3, StatusName = "Failed" }
+            );
+
+            modelBuilder.Entity<OrderStatus>().HasData(
+                new OrderStatus { OrderStatusID = 1, StatusName = "Pending" },
+                new OrderStatus { OrderStatusID = 2, StatusName = "Processing" },
+                new OrderStatus { OrderStatusID = 3, StatusName = "Completed" },
+                new OrderStatus { OrderStatusID = 4, StatusName = "Cancelled" }
+            );
+
             modelBuilder.Entity<Role>().HasData(
                 new Role { RoleID = 1, RoleName = "Super User" },
                 new Role { RoleID = 2, RoleName = "Admin" },
                 new Role { RoleID = 3, RoleName = "User" }
             );
 
-            // Seed predefined categories
             modelBuilder.Entity<Category>().HasData(
                 new Category { CategoryID = 1, CategoryName = "Drinks" },
                 new Category { CategoryID = 2, CategoryName = "Meals" },
@@ -38,7 +59,10 @@ namespace SwiftServe.Data
                 new Category { CategoryID = 4, CategoryName = "Cold Beverages" },
                 new Category { CategoryID = 5, CategoryName = "Desserts" },
                 new Category { CategoryID = 6, CategoryName = "Sides & Snacks" }
+
             );
+
+            //DB relationships
 
             // User-Wallet one-to-one
             modelBuilder.Entity<User>()
@@ -60,7 +84,7 @@ namespace SwiftServe.Data
 
             modelBuilder.Entity<Wallet>()
                 .Property(w => w.Balance)
-                .HasColumnType("decimal(10, 2)");
+                .HasColumnType("decimal(18, 2)");
 
             // ProductSupplier many-to-many config
             modelBuilder.Entity<ProductSupplier>()

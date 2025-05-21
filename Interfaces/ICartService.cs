@@ -1,6 +1,5 @@
-﻿using SwiftServe.Models.Cart;
+﻿using SwiftServe.Models.Carts;
 using SwiftServe.Dtos;
-
 
 namespace SwiftServe.Interfaces
 {
@@ -14,5 +13,8 @@ namespace SwiftServe.Interfaces
         Task<CartResponseDto> GetCartDtoAsync(int userId);
         Task<decimal> GetTotalPriceAsync(int userId);
         Task<bool> ProductExistsInCartAsync(int userId, int productId);
+
+        // Add this method
+        Task<CheckoutResultDto> CheckoutAsync(int userId);
     }
 }

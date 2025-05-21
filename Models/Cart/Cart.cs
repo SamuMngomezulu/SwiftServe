@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using SwiftServe.Models.Users;
 
-namespace SwiftServe.Models.Cart
+namespace SwiftServe.Models.Carts
 {
     public class Cart
     {

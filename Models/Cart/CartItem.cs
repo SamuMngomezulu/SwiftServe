@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using SwiftServe.Models.Catalogue;
 
-namespace SwiftServe.Models.Cart
+namespace SwiftServe.Models.Carts
 {
     public class CartItem
     {
@@ -12,6 +12,7 @@ namespace SwiftServe.Models.Cart
         [Range(1, int.MaxValue, ErrorMessage = "Quantity must be at least 1")]
         public int Quantity { get; set; }
 
+        [Required]
         [ForeignKey("Cart")]
         public int CartID { get; set; }
 
