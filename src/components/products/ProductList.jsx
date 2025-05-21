@@ -37,8 +37,13 @@ const ProductList = () => {
                         : Object.values(productsData.products)
                     : [];
 
-            setProducts(productsArray);
-            setFilteredProducts(productsArray);
+            // Filter out unavailable products (where IsAvailable is false or stock is 0)
+            const availableProducts = productsArray.filter(product =>
+                product.isAvailable && product.productStockQuantity > 0
+            );
+
+            setProducts(availableProducts);
+            setFilteredProducts(availableProducts);
             setCategories(categoriesData);
         } catch (err) {
             console.error('Error fetching products:', err);

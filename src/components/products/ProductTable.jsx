@@ -42,6 +42,18 @@ const ProductTable = () => {
         if (currentPage > 1) setCurrentPage(prev => prev - 1);
     };
 
+    const updateProductAvailability = (product) => {
+        // If quantity is 0, product must be unavailable
+        if (product.productStockQuantity <= 0) {
+            return {
+                ...product,
+                isAvailable: false
+            };
+        }
+        // Otherwise, keep whatever availability was set (manual true/false)
+        return product;
+    };
+
     const fetchProducts = async () => {
         try {
             setLoading(true);
@@ -50,7 +62,10 @@ const ProductTable = () => {
                 ? productsData
                 : productsData?.data || productsData?.products || [];
             const finalArray = Array.isArray(normalized) ? normalized : Object.values(normalized);
-            setProducts(finalArray);
+
+            // Update availability based on stock quantity
+            const productsWithUpdatedAvailability = finalArray.map(updateProductAvailability);
+            setProducts(productsWithUpdatedAvailability);
         } catch (err) {
             console.error('Fetch error:', err);
             setError('Failed to fetch products.');
@@ -92,30 +107,53 @@ const ProductTable = () => {
             productPrice: product.productPrice,
             categoryID: product.category?.categoryID || '',
             productStockQuantity: product.productStockQuantity,
-            isAvailable: product.isAvailable,
+            isAvailable: product.productStockQuantity > 0 ? product.isAvailable : false,
             imageFile: null
         });
     };
 
     const handleEditFormChange = (e) => {
         const { name, value, type, checked, files } = e.target;
-        setEditFormData({
-            ...editFormData,
-            [name]: type === 'checkbox' ? checked :
-                type === 'file' ? files[0] : value
+
+        setEditFormData(prev => {
+            // When quantity changes
+            if (name === 'productStockQuantity') {
+                const newQuantity = type === 'number' ? parseInt(value) || 0 : prev.productStockQuantity;
+                const wasZero = prev.productStockQuantity <= 0;
+                const isNowPositive = newQuantity > 0;
+
+                return {
+                    ...prev,
+                    [name]: type === 'number' ? parseInt(value) || 0 : value,
+                    // Automatically check availability when going from 0 to positive quantity
+                    isAvailable: wasZero && isNowPositive ? true : prev.isAvailable
+                };
+            }
+
+            // For all other fields
+            return {
+                ...prev,
+                [name]: type === 'checkbox' ? checked :
+                    type === 'file' ? files[0] : value
+            };
         });
     };
 
     const handleEditSubmit = async (e) => {
         e.preventDefault();
         try {
+            // If quantity is 0, force isAvailable to false
+            const finalIsAvailable = editFormData.productStockQuantity > 0
+                ? editFormData.isAvailable
+                : false;
+
             const formData = new FormData();
             formData.append('ProductName', editFormData.productName);
             formData.append('ProductDescription', editFormData.productDescription || '');
             formData.append('ProductPrice', editFormData.productPrice);
             formData.append('CategoryID', editFormData.categoryID);
             formData.append('ProductStockQuantity', editFormData.productStockQuantity);
-            formData.append('IsAvailable', editFormData.isAvailable);
+            formData.append('IsAvailable', finalIsAvailable);
 
             if (editFormData.imageFile) {
                 formData.append('ImageFile', editFormData.imageFile);
@@ -127,7 +165,7 @@ const ProductTable = () => {
 
             setProducts(products.map(product =>
                 product.productID === editingProduct.productID
-                    ? { ...product, ...response.data.product }
+                    ? updateProductAvailability({ ...product, ...response.data.product })
                     : product
             ));
 
@@ -290,17 +328,22 @@ const ProductTable = () => {
                                             required
                                         />
                                     </div>
-                                    <div className="form-group checkbox">
-                                        <label>
-                                            <input
-                                                type="checkbox"
-                                                name="isAvailable"
-                                                checked={editFormData.isAvailable}
-                                                onChange={handleEditFormChange}
-                                            />
-                                            Available
-                                        </label>
-                                    </div>
+                                            <div className="form-group checkbox">
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        name="isAvailable"
+                                                        checked={editFormData.isAvailable}
+                                                        onChange={handleEditFormChange}
+                                                        disabled={editFormData.productStockQuantity <= 0}
+                                                    />
+                                                    Available
+                                                    {editFormData.productStockQuantity <= 0 && (
+                                                        <span className="availability-hint">(Product unavailable when stock is 0)</span>
+                                                    )}
+                                                </label>
+                                            </div>
+
                                     <div className="form-group">
                                         <label>Product Image</label>
                                         <input

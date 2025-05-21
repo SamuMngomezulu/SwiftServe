@@ -28,4 +28,21 @@ api.interceptors.response.use((response) => {
     return Promise.reject(error);
 });
 
+
+export const cartApi = {
+    getCart: () => api.get('/cart'),
+    getCartItems: () => api.get('/cart/items'),
+    getCartTotal: () => api.get('/cart/total'),
+    addToCart: (request) => api.post('/cart/add', {
+        ProductID: request.productID,
+        Quantity: request.quantity
+    }),
+    updateCartItem: (cartItemID, request) => api.put(`/cart/update/${cartItemID}`, {
+        Quantity: request.quantity
+    }),
+    removeFromCart: (cartItemID) => api.delete(`/cart/remove/${cartItemID}`),
+    clearCart: () => api.delete('/cart/clear'),
+    checkout: () => api.post('/cart/checkout')
+    
+};
 export default api;

@@ -9,14 +9,14 @@ const CartModal = () => {
         setIsCartOpen,
         removeFromCart,
         updateQuantity,
-        clearCart
+        clearCart,
     } = useCart();
 
     if (!isCartOpen) return null;
 
     return (
         <div className="cart-modal-overlay" onClick={() => setIsCartOpen(false)}>
-            <div className="cart-modal" onClick={e => e.stopPropagation()}>
+            <div className="cart-modal" onClick={(e) => e.stopPropagation()}>
                 <div className="cart-modal-header">
                     <h3>Your Shopping Cart</h3>
                     <button
@@ -42,7 +42,7 @@ const CartModal = () => {
                         <>
                             <ul className="cart-items">
                                 {cartItems.map(item => (
-                                    <li key={item.id} className="cart-item">
+                                    <li key={item.cartItemID} className="cart-item">
                                         <div className="cart-item-main">
                                             <img
                                                 src={item.image}
@@ -51,14 +51,13 @@ const CartModal = () => {
                                             />
                                             <div className="cart-item-details">
                                                 <h4>{item.name}</h4>
-                                                {/* Removed unit price */}
                                             </div>
                                         </div>
                                         <div className="cart-item-price-actions">
                                             <div className="quantity-control">
                                                 <button
                                                     className="quantity-button"
-                                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                                                    onClick={() => updateQuantity(item.productID, item.quantity - 1)}
                                                     disabled={item.quantity <= 1}
                                                 >
                                                     -
@@ -66,16 +65,16 @@ const CartModal = () => {
                                                 <span className="quantity-display">{item.quantity}</span>
                                                 <button
                                                     className="quantity-button"
-                                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                                    onClick={() => updateQuantity(item.productID, item.quantity + 1)}
                                                 >
                                                     +
                                                 </button>
                                             </div>
                                             <span className="cart-item-price">
-                                                R{(item.price * item.quantity).toFixed(2)}
+                                                R{item.lineTotal.toFixed(2)}
                                             </span>
                                             <button
-                                                onClick={() => removeFromCart(item.id)}
+                                                onClick={() => removeFromCart(item.productID)}
                                                 className="remove-item"
                                             >
                                                 Remove
