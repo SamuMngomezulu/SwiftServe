@@ -7,6 +7,7 @@ const CartContext = createContext();
 export const CartProvider = ({ children }) => {
     const [cartItems, setCartItems] = useState([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [productStockUpdates, setProductStockUpdates] = useState({});
     const { isAuthenticated } = useAuth();
 
     useEffect(() => {
@@ -37,6 +38,13 @@ export const CartProvider = ({ children }) => {
         } catch (error) {
             console.error('Failed to fetch cart:', error);
         }
+    };
+
+    const updateProductStock = (productID, quantityChange) => {
+        setProductStockUpdates(prev => ({
+            ...prev,
+            [productID]: (prev[productID] || 0) + quantityChange
+        }));
     };
 
     const addToCart = async (product) => {
@@ -81,6 +89,9 @@ export const CartProvider = ({ children }) => {
                     }
                 ];
             });
+
+            // Update stock (subtract the quantity added)
+            updateProductStock(product.id, -quantityToAdd);
         } catch (error) {
             console.error('Failed to add to cart:', error);
             throw error;
@@ -93,6 +104,9 @@ export const CartProvider = ({ children }) => {
             if (itemToRemove) {
                 await cartApi.removeFromCart(itemToRemove.cartItemID);
                 setCartItems(prevItems => prevItems.filter(item => item.productID !== productID));
+
+                // Update stock (add back the quantity removed)
+                updateProductStock(productID, itemToRemove.quantity);
             }
         } catch (error) {
             console.error('Failed to remove from cart:', error);
@@ -104,6 +118,8 @@ export const CartProvider = ({ children }) => {
         try {
             const itemToUpdate = cartItems.find(item => item.productID === productID);
             if (itemToUpdate && itemToUpdate.quantity !== newQuantity) {
+                const quantityDifference = itemToUpdate.quantity - newQuantity;
+
                 const response = await cartApi.updateCartItem(itemToUpdate.cartItemID, {
                     quantity: newQuantity
                 });
@@ -127,6 +143,9 @@ export const CartProvider = ({ children }) => {
                             : item
                     )
                 );
+
+                // Update stock based on the quantity difference
+                updateProductStock(productID, quantityDifference);
             }
         } catch (error) {
             console.error('Failed to update quantity:', error);
@@ -135,8 +154,19 @@ export const CartProvider = ({ children }) => {
 
     const clearCart = async () => {
         try {
+            // First create a map of product IDs and their quantities
+            const stockUpdates = {};
+            cartItems.forEach(item => {
+                stockUpdates[item.productID] = (stockUpdates[item.productID] || 0) + item.quantity;
+            });
+
             await cartApi.clearCart();
             setCartItems([]);
+
+            // Update stock for all products in the cart
+            Object.entries(stockUpdates).forEach(([productID, quantity]) => {
+                updateProductStock(productID, quantity);
+            });
         } catch (error) {
             console.error('Failed to clear cart:', error);
             throw error;
@@ -160,7 +190,8 @@ export const CartProvider = ({ children }) => {
             totalItems,
             totalPrice,
             isCartOpen,
-            setIsCartOpen
+            setIsCartOpen,
+            productStockUpdates
         }}>
             {children}
         </CartContext.Provider>

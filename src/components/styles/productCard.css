@@ -171,3 +171,13 @@
         color: white;
         font-weight: bold;
     }
+
+.message.success {
+    color: green;
+    margin-top: 5px;
+}
+
+.message.error {
+    color: red;
+    margin-top: 5px;
+}

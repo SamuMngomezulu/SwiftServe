@@ -1,4 +1,5 @@
 import { useCart } from '../context/CartContext';
+import { toast } from 'react-toastify';
 import '../styles/cartModal.css';
 
 const CartModal = () => {
@@ -13,6 +14,15 @@ const CartModal = () => {
     } = useCart();
 
     if (!isCartOpen) return null;
+
+    const handleDecreaseQuantity = (item) => {
+        if (item.quantity > 1) {
+            updateQuantity(item.productID, item.quantity - 1);
+        } else {
+            removeFromCart(item.productID);
+            toast.info(`${item.name} removed from cart.`);
+        }
+    };
 
     return (
         <div className="cart-modal-overlay" onClick={() => setIsCartOpen(false)}>
@@ -57,8 +67,7 @@ const CartModal = () => {
                                             <div className="quantity-control">
                                                 <button
                                                     className="quantity-button"
-                                                    onClick={() => updateQuantity(item.productID, item.quantity - 1)}
-                                                    disabled={item.quantity <= 1}
+                                                    onClick={() => handleDecreaseQuantity(item)}
                                                 >
                                                     -
                                                 </button>
@@ -74,7 +83,10 @@ const CartModal = () => {
                                                 R{item.lineTotal.toFixed(2)}
                                             </span>
                                             <button
-                                                onClick={() => removeFromCart(item.productID)}
+                                                onClick={() => {
+                                                    removeFromCart(item.productID);
+                                                    toast.info(`${item.name} removed from cart.`);
+                                                }}
                                                 className="remove-item"
                                             >
                                                 Remove
@@ -92,12 +104,18 @@ const CartModal = () => {
 
                                 <div className="cart-buttons">
                                     <button
-                                        onClick={clearCart}
+                                        onClick={() => {
+                                            clearCart();
+                                            toast.warn('Cart cleared.');
+                                        }}
                                         className="clear-cart"
                                     >
                                         Clear Cart
                                     </button>
-                                    <button className="checkout-button">
+                                    <button
+                                        className="checkout-button"
+                                        onClick={() => toast.success('Checkout complete!')}
+                                    >
                                         Proceed to Checkout
                                     </button>
                                 </div>

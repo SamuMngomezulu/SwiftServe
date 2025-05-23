@@ -8,6 +8,8 @@ import ProductManagement from './components/products/ProductManagement';
 import Layout from './components/layout/layout';
 import RequireAuth from './components/auth/RequireAuth';
 import './components/styles/styles.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     return (
@@ -25,7 +27,9 @@ function App() {
                             element={
                                 <Layout>
                                     <ProductList />
+                                    <ToastContainer position="top-right" autoClose={3000} />
                                 </Layout>
+                             
                             }
                         />
 
@@ -40,6 +44,8 @@ function App() {
                                 </RequireAuth>
                             }
                         />
+                     
+
                     </Routes>
                 </CartProvider>
             </AuthProvider>

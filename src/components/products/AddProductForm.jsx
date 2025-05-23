@@ -2,6 +2,8 @@
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import '../styles/addProductForm.css';
+import { toast } from 'react-toastify';
+
 
 const AddProductForm = ({ onSuccess }) => {
     const fileInputRef = useRef(null);
@@ -153,8 +155,9 @@ const AddProductForm = ({ onSuccess }) => {
 
         const validationError = validate();
         if (validationError) {
-            setError(validationError);
+            toast.error(validationError);
             return;
+
         }
 
         try {
@@ -163,6 +166,7 @@ const AddProductForm = ({ onSuccess }) => {
             const data = new FormData();
             data.append('ProductName', formData.ProductName);
             data.append('ProductDescription', formData.ProductDescription || '');
+            toast.success('Product added successfully!');
 
             
             const price = parseFloat(formData.ProductPrice);
@@ -180,6 +184,9 @@ const AddProductForm = ({ onSuccess }) => {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
+
+               
+
             });
 
             
@@ -225,7 +232,7 @@ const AddProductForm = ({ onSuccess }) => {
                 errorMessage = err.message;
             }
 
-            setError(errorMessage);
+            toast.error(errorMessage);
         } finally {
             setLoading(false);
         }

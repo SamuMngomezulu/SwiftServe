@@ -1,7 +1,9 @@
 ﻿import { useEffect, useState, useMemo } from 'react';
-import { getProducts, deleteProduct, updateProduct, getCategories } from '../services/productService';
+import { getProducts, deleteProduct, getCategories } from '../services/productService';
 import '../styles/productTable.css';
 import api from '../services/api';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProductTable = () => {
     const [products, setProducts] = useState([]);
@@ -43,14 +45,12 @@ const ProductTable = () => {
     };
 
     const updateProductAvailability = (product) => {
-        // If quantity is 0, product must be unavailable
         if (product.productStockQuantity <= 0) {
             return {
                 ...product,
                 isAvailable: false
             };
         }
-        // Otherwise, keep whatever availability was set (manual true/false)
         return product;
     };
 
@@ -63,12 +63,12 @@ const ProductTable = () => {
                 : productsData?.data || productsData?.products || [];
             const finalArray = Array.isArray(normalized) ? normalized : Object.values(normalized);
 
-            // Update availability based on stock quantity
             const productsWithUpdatedAvailability = finalArray.map(updateProductAvailability);
             setProducts(productsWithUpdatedAvailability);
         } catch (err) {
             console.error('Fetch error:', err);
             setError('Failed to fetch products.');
+            toast.error('Failed to fetch products.');
         } finally {
             setLoading(false);
         }
@@ -80,6 +80,7 @@ const ProductTable = () => {
             setCategories(categoriesData);
         } catch (err) {
             console.error('Failed to fetch categories:', err);
+            toast.error('Failed to fetch categories.');
         }
     };
 
@@ -93,9 +94,10 @@ const ProductTable = () => {
         try {
             await deleteProduct(productId);
             setProducts(prev => prev.filter(p => p.productID !== productId));
+            toast.success('Product deleted successfully!');
         } catch (err) {
             console.error('Delete error:', err);
-            alert('Failed to delete product.');
+            toast.error('Failed to delete product.');
         }
     };
 
@@ -116,7 +118,6 @@ const ProductTable = () => {
         const { name, value, type, checked, files } = e.target;
 
         setEditFormData(prev => {
-            // When quantity changes
             if (name === 'productStockQuantity') {
                 const newQuantity = type === 'number' ? parseInt(value) || 0 : prev.productStockQuantity;
                 const wasZero = prev.productStockQuantity <= 0;
@@ -125,12 +126,10 @@ const ProductTable = () => {
                 return {
                     ...prev,
                     [name]: type === 'number' ? parseInt(value) || 0 : value,
-                    // Automatically check availability when going from 0 to positive quantity
                     isAvailable: wasZero && isNowPositive ? true : prev.isAvailable
                 };
             }
 
-            // For all other fields
             return {
                 ...prev,
                 [name]: type === 'checkbox' ? checked :
@@ -142,7 +141,6 @@ const ProductTable = () => {
     const handleEditSubmit = async (e) => {
         e.preventDefault();
         try {
-            // If quantity is 0, force isAvailable to false
             const finalIsAvailable = editFormData.productStockQuantity > 0
                 ? editFormData.isAvailable
                 : false;
@@ -170,10 +168,10 @@ const ProductTable = () => {
             ));
 
             setEditingProduct(null);
-            alert('Product updated successfully!');
+            toast.success('Product updated successfully!');
         } catch (err) {
             console.error('Update error:', err);
-            alert(err.response?.data?.message || 'Failed to update product.');
+            toast.error(err.response?.data?.message || 'Failed to update product.');
         }
     };
 
@@ -183,6 +181,7 @@ const ProductTable = () => {
 
     return (
         <div className="product-table-container">
+            <ToastContainer position="top-right" autoClose={3000} />
             <div className="search-container">
                 <input
                     type="text"
@@ -194,7 +193,6 @@ const ProductTable = () => {
                     }}
                     className="search-input"
                 />
-
             </div>
 
             {!loading && !error && searchTerm && (
@@ -328,22 +326,21 @@ const ProductTable = () => {
                                             required
                                         />
                                     </div>
-                                            <div className="form-group checkbox">
-                                                <label>
-                                                    <input
-                                                        type="checkbox"
-                                                        name="isAvailable"
-                                                        checked={editFormData.isAvailable}
-                                                        onChange={handleEditFormChange}
-                                                        disabled={editFormData.productStockQuantity <= 0}
-                                                    />
-                                                    Available
-                                                    {editFormData.productStockQuantity <= 0 && (
-                                                        <span className="availability-hint">(Product unavailable when stock is 0)</span>
-                                                    )}
-                                                </label>
-                                            </div>
-
+                                    <div className="form-group checkbox">
+                                        <label>
+                                            <input
+                                                type="checkbox"
+                                                name="isAvailable"
+                                                checked={editFormData.isAvailable}
+                                                onChange={handleEditFormChange}
+                                                disabled={editFormData.productStockQuantity <= 0}
+                                            />
+                                            Available
+                                            {editFormData.productStockQuantity <= 0 && (
+                                                <span className="availability-hint">(Product unavailable when stock is 0)</span>
+                                            )}
+                                        </label>
+                                    </div>
                                     <div className="form-group">
                                         <label>Product Image</label>
                                         <input
