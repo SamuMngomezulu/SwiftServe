@@ -114,6 +114,27 @@
         text-decoration: underline;
     }
 
+
+/* Wallet Balance Styles */
+.wallet-balance {
+    padding: 0.5rem 0;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+    .wallet-balance h4 {
+        margin: 0 0 0.25rem 0;
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+.balance-amount {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin: 0;
+}
+
 /* Responsive styles for mobile view */
 @media (max-width: 768px) {
     .sidebar {

@@ -10,6 +10,9 @@ import RequireAuth from './components/auth/RequireAuth';
 import './components/styles/styles.css';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import WalletPage from './components/wallet/WalletPage';
+import DepositPage from './components/wallet/DepositPage';
+
 
 function App() {
     return (
@@ -20,6 +23,8 @@ function App() {
                         <Route path="/" element={<Navigate to="/login" />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
+                        <Route path="/wallet" element={<WalletPage />} />
+                        <Route path="/deposit" element={<DepositPage />} />
 
                         {/* Public product listing */}
                         <Route

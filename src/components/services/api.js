@@ -28,6 +28,15 @@ api.interceptors.response.use((response) => {
     return Promise.reject(error);
 });
 
+// Add to api.js
+export const walletApi = {
+    getBalance: () => api.get('/wallet/balance'),
+    deposit: (amount) => api.post('/wallet/deposit', { amount }),
+    getTransactions: () => api.get('/wallet/transactions'),
+    getDeposits: () => api.get('/wallet/transactions/deposits'),
+    getPurchases: () => api.get('/wallet/transactions/purchases')
+};
+
 
 export const cartApi = {
     getCart: () => api.get('/cart'),

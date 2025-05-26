@@ -2,6 +2,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/sidebar.css';
+import WalletBalance from '../wallet/WalletBalance';
 
 const Sidebar = () => {
     const { user, hasRole, ROLE_KEYS, logout } = useAuth();
@@ -15,6 +16,7 @@ const Sidebar = () => {
         e.preventDefault();
         logout();
     };
+
 
     return (
         <aside className="sidebar">
@@ -47,18 +49,28 @@ const Sidebar = () => {
                         </>
                     )}
 
-                    {/* Customer-specific routes */}
-                    {hasRole(ROLE_KEYS.USER) && (
-                        <li className={isActive('/my-orders')}>
-                            <Link to="/my-orders">My Orders</Link>
-                        </li>
+                    {(hasRole(ROLE_KEYS.USER) || hasRole(ROLE_KEYS.SUPER_USER) || hasRole(ROLE_KEYS.ADMIN)) && (
+                        <>
+                            <li className={isActive('/my-orders')}>
+                                <Link to="/my-orders">My Orders</Link>
+                            </li>
+                            <li className={isActive('/wallet')}>
+                                <Link to="/wallet">Wallet</Link>
+                            </li>
+                            <li className={isActive('/deposit')}>
+                                <Link to="/deposit">Add Funds</Link>
+                            </li>
+                        </>
                     )}
+
+
                 </ul>
             </nav>
 
             <div className="sidebar-footer">
                 {user && (
                     <div className="user-info">
+                        <WalletBalance />
                         <span>{user.email}</span>
                         <span className="user-role">{user.roles?.[0]}</span>
                         <a href="/logout" onClick={handleLogout} className="logout-btn">
