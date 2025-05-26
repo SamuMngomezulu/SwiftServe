@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SwiftServe.Interfaces;
-using SwiftServe.Models.Users;
 using System.Security.Claims;
 
 using SwiftServe.Dtos;

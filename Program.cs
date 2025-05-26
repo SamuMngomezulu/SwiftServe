@@ -1,9 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SwiftServe.Data;
-using AutoMapper;
-using SwiftServe;
 using SwiftServe.Mappings;
-using Microsoft.Extensions.Configuration;
 using SwiftServe.Services;
 using SwiftServe.Implementations;
 using SwiftServe.Interfaces;
@@ -11,8 +8,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SwiftServe.Settings;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 
 
@@ -42,6 +37,7 @@ builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
+
 
 
 var jwtSettingsSection = builder.Configuration.GetSection("Jwt");

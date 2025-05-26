@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SwiftServe.Data;
-using SwiftServe.Interfaces;
-using SwiftServe.Models.Users;
-using SwiftServe.Models.Orders;
 using SwiftServe.Dtos;
+using SwiftServe.Interfaces;
+using SwiftServe.Models.Orders;
+using SwiftServe.Models.Users;
+
 
 namespace SwiftServe.Implementations
 {
@@ -14,18 +15,6 @@ namespace SwiftServe.Implementations
         public WalletService(test_SwiftServeDbContext context)
         {
             _context = context;
-        }
-
-        public async Task<Wallet> GetWalletByUserIdAsync(int userId)
-        {
-            return await _context.Wallets
-                .Include(w => w.Transactions)
-                    .ThenInclude(t => t.TransactionType)
-                .Include(w => w.Transactions)
-                    .ThenInclude(t => t.TransactionStatus)
-                .Include(w => w.Transactions)
-                    .ThenInclude(t => t.Order)
-                .FirstOrDefaultAsync(w => w.UserID == userId);
         }
 
         public async Task<decimal> GetWalletBalanceAsync(int userId)
@@ -45,7 +34,7 @@ namespace SwiftServe.Implementations
             if (amount <= 0)
                 throw new ArgumentException("Amount must be greater than zero");
 
-            var wallet = await GetWalletByUserIdAsync(userId);
+            var wallet = await GetWalletWithTransactions(userId);
 
             if (wallet == null)
             {
@@ -66,7 +55,7 @@ namespace SwiftServe.Implementations
             {
                 WalletID = wallet.WalletID,
                 TransactionTypeID = 1, // Deposit
-                TransactionStatusID = 1, // Completed
+                TransactionStatusID = 2, // Completed
                 TransactionAmount = amount,
                 TransactionDate = DateTime.UtcNow
             };
@@ -74,32 +63,32 @@ namespace SwiftServe.Implementations
             await _context.Transactions.AddAsync(transaction);
             await _context.SaveChangesAsync();
 
-            return new TransactionDto
-            {
-                TransactionID = transaction.TransactionID,
-                TransactionAmount = transaction.TransactionAmount,
-                TypeName = "Deposit",
-                StatusName = "Completed",
-                Date = transaction.TransactionDate,
-                OrderID = null
-            };
+            return MapToTransactionDto(transaction);
         }
 
-        public async Task<Transaction> CreateTransactionAsync(int userId, int orderId, decimal amount)
+        public async Task<Transaction> CreatePurchaseTransactionAsync(int userId, int orderId, decimal amount)
         {
-            var wallet = await GetWalletByUserIdAsync(userId);
+            var wallet = await GetWalletWithTransactions(userId);
             if (wallet == null)
                 throw new ArgumentException("Wallet not found");
+
+            // Verify sufficient funds first
+            if (!await HasSufficientFundsAsync(userId, amount))
+                throw new InvalidOperationException("Insufficient funds");
 
             var transaction = new Transaction
             {
                 WalletID = wallet.WalletID,
                 OrderID = orderId,
                 TransactionTypeID = 2, // Purchase
-                TransactionStatusID = 1, // Completed
+                TransactionStatusID = 1, // Pending
                 TransactionAmount = amount,
                 TransactionDate = DateTime.UtcNow
             };
+
+            // Deduct balance immediately for purchase
+            wallet.Balance -= amount;
+            _context.Wallets.Update(wallet);
 
             await _context.Transactions.AddAsync(transaction);
             await _context.SaveChangesAsync();
@@ -107,20 +96,61 @@ namespace SwiftServe.Implementations
             return transaction;
         }
 
-        public async Task<List<TransactionDto>> GetTransactionDtosByUserIdAsync(int userId)
+        public async Task<List<TransactionDto>> GetTransactionHistoryAsync(int userId)
         {
-            var wallet = await GetWalletByUserIdAsync(userId);
+            var wallet = await GetWalletWithTransactions(userId);
             if (wallet == null) return new List<TransactionDto>();
 
-            return wallet.Transactions.Select(t => new TransactionDto
+            return wallet.Transactions
+                .Select(MapToTransactionDto)
+                .ToList();
+        }
+
+        public async Task<List<TransactionDto>> GetDepositHistoryAsync(int userId)
+        {
+            var wallet = await GetWalletWithTransactions(userId);
+            if (wallet == null) return new List<TransactionDto>();
+
+            return wallet.Transactions
+                .Where(t => t.TransactionTypeID == 1) // Deposit transactions
+                .Select(MapToTransactionDto)
+                .ToList();
+        }
+
+        public async Task<List<TransactionDto>> GetPurchaseHistoryAsync(int userId)
+        {
+            var wallet = await GetWalletWithTransactions(userId);
+            if (wallet == null) return new List<TransactionDto>();
+
+            return wallet.Transactions
+                .Where(t => t.TransactionTypeID == 2) // Purchase transactions
+                .Select(MapToTransactionDto)
+                .ToList();
+        }
+
+        private async Task<Wallet> GetWalletWithTransactions(int userId)
+        {
+            return await _context.Wallets
+                .Include(w => w.Transactions)
+                    .ThenInclude(t => t.TransactionType)
+                .Include(w => w.Transactions)
+                    .ThenInclude(t => t.TransactionStatus)
+                .Include(w => w.Transactions)
+                    .ThenInclude(t => t.Order)
+                .FirstOrDefaultAsync(w => w.UserID == userId);
+        }
+
+        private TransactionDto MapToTransactionDto(Transaction transaction)
+        {
+            return new TransactionDto
             {
-                TransactionID = t.TransactionID,
-                TransactionAmount = t.TransactionAmount,
-                TypeName = t.TransactionType?.TypeName ?? "Unknown",
-                StatusName = t.TransactionStatus?.StatusName ?? "Unknown",
-                Date = t.TransactionDate,
-                OrderID = t.OrderID
-            }).ToList();
+                TransactionID = transaction.TransactionID,
+                TransactionAmount = transaction.TransactionAmount,
+                TypeName = transaction.TransactionType?.TypeName ?? "Unknown",
+                StatusName = transaction.TransactionStatus?.StatusName ?? "Unknown",
+                Date = transaction.TransactionDate,
+                OrderID = transaction.OrderID
+            };
         }
     }
 }

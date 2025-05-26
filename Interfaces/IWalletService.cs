@@ -1,15 +1,18 @@
-﻿using SwiftServe.Models.Users;
+﻿using SwiftServe.Dtos;
 using SwiftServe.Models.Orders;
-using SwiftServe.Dtos;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SwiftServe.Interfaces
 {
     public interface IWalletService
     {
-        Task<Wallet> GetWalletByUserIdAsync(int userId);
         Task<decimal> GetWalletBalanceAsync(int userId);
         Task<bool> HasSufficientFundsAsync(int userId, decimal amount);
         Task<TransactionDto> AddFundsAsync(int userId, decimal amount);
-        Task<List<TransactionDto>> GetTransactionDtosByUserIdAsync(int userId);
+        Task<Transaction> CreatePurchaseTransactionAsync(int userId, int orderId, decimal amount);
+        Task<List<TransactionDto>> GetTransactionHistoryAsync(int userId);
+        Task<List<TransactionDto>> GetDepositHistoryAsync(int userId);
+        Task<List<TransactionDto>> GetPurchaseHistoryAsync(int userId);
     }
 }

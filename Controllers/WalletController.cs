@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SwiftServe.Interfaces;
 using SwiftServe.Dtos;
+using SwiftServe.Interfaces;
 using System.Security.Claims;
 
 namespace SwiftServe.Controllers
@@ -53,13 +53,32 @@ namespace SwiftServe.Controllers
 
         [HttpGet("transactions")]
         [Authorize]
-        public async Task<ActionResult<List<TransactionDto>>> GetTransactions()
+        public async Task<ActionResult<List<TransactionDto>>> GetAllTransactions()
         {
             var userId = GetUserId();
             if (userId == null) return Unauthorized();
 
-            var transactions = await _walletService.GetTransactionDtosByUserIdAsync(userId.Value);
-            return Ok(transactions);
+            return Ok(await _walletService.GetTransactionHistoryAsync(userId.Value));
+        }
+
+        [HttpGet("transactions/deposits")]
+        [Authorize]
+        public async Task<ActionResult<List<TransactionDto>>> GetDepositTransactions()
+        {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
+            return Ok(await _walletService.GetDepositHistoryAsync(userId.Value));
+        }
+
+        [HttpGet("transactions/purchases")]
+        [Authorize]
+        public async Task<ActionResult<List<TransactionDto>>> GetPurchaseTransactions()
+        {
+            var userId = GetUserId();
+            if (userId == null) return Unauthorized();
+
+            return Ok(await _walletService.GetPurchaseHistoryAsync(userId.Value));
         }
     }
 }
