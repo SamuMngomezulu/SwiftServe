@@ -1,0 +1,142 @@
+/* orderCard.css */
+.order-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+    .order-card.status-1 {
+        border-left: 4px solid #ffc107; /* Processing - yellow */
+    }
+
+    .order-card.status-2 {
+        border-left: 4px solid #17a2b8; /* Shipped - teal */
+    }
+
+    .order-card.status-3 {
+        border-left: 4px solid #28a745; /* Completed - green */
+    }
+
+    .order-card.status-4 {
+        border-left: 4px solid #dc3545; /* Canceled - red */
+    }
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+    .order-header h3 {
+        margin: 0;
+        color: #333;
+    }
+
+.order-date {
+    color: #6c757d;
+}
+
+.order-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.order-summary {
+    display: flex;
+    gap: 15px;
+}
+
+    .order-summary span {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+
+.order-total {
+    background: #f8f9fa;
+    color: #212529;
+}
+
+.order-status {
+    background: #e9ecef;
+    color: #495057;
+}
+
+.delivery-method {
+    background: #e2f3ff;
+    color: #0d6efd;
+}
+
+.order-actions select {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.order-actions button,
+.cancel-button {
+    padding: 5px 10px;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cancel-button {
+    background: #fff3f3;
+    border-color: #ffc9c9;
+    color: #dc3545;
+}
+
+    .cancel-button:hover {
+        background: #ffecec;
+    }
+
+.order-items {
+    margin-top: 15px;
+}
+
+    .order-items h4 {
+        margin-bottom: 10px;
+        color: #495057;
+    }
+
+    .order-items ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+.order-item {
+    display: flex;
+    gap: 15px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f1f1;
+    align-items: center;
+}
+
+    .order-item:last-child {
+        border-bottom: none;
+    }
+
+    .order-item img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .order-item div {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .order-item span {
+        font-size: 0.9rem;
+    }

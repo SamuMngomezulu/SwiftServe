@@ -1,6 +1,8 @@
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-toastify';
 import '../styles/cartModal.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const CartModal = () => {
     const {
@@ -12,6 +14,8 @@ const CartModal = () => {
         updateQuantity,
         clearCart,
     } = useCart();
+
+    const navigate = useNavigate();
 
     if (!isCartOpen) return null;
 
@@ -112,12 +116,16 @@ const CartModal = () => {
                                     >
                                         Clear Cart
                                     </button>
-                                    <button
-                                        className="checkout-button"
-                                        onClick={() => toast.success('Checkout complete!')}
-                                    >
-                                        Proceed to Checkout
-                                    </button>
+                                        <button
+                                            className="checkout-button"
+                                            onClick={() => {
+                                             
+                                                // Replace the toast with actual checkout logic
+                                                navigate('/checkout');
+                                            }}
+                                        >
+                                            Proceed to Checkout
+                                        </button>
                                 </div>
                             </div>
                         </>

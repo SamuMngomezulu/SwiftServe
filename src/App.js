@@ -12,6 +12,11 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import WalletPage from './components/wallet/WalletPage';
 import DepositPage from './components/wallet/DepositPage';
+import OrderManagementPage from './components/pages/OrderManagementPage';
+import MyOrdersPage from './components/pages/MyOrdersPage';
+import CheckoutPage from './components/pages/CheckoutPage';
+import OrderConfirmationPage from './components/pages/OrderConfirmationPage';
+
 
 
 function App() {
@@ -25,6 +30,10 @@ function App() {
                         <Route path="/register" element={<RegisterPage />} />
                         <Route path="/wallet" element={<WalletPage />} />
                         <Route path="/deposit" element={<DepositPage />} />
+                        <Route path="/my-orders" element={<MyOrdersPage />} />
+                        <Route path="/order-management" element={<OrderManagementPage />} />
+                        <Route path="/checkout" element={<CheckoutPage />} />
+                        <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
 
                         {/* Public product listing */}
                         <Route

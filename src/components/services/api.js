@@ -37,6 +37,19 @@ export const walletApi = {
     getPurchases: () => api.get('/wallet/transactions/purchases')
 };
 
+// Add to api.js
+export const orderApi = {
+    getUserOrders: () => api.get('/orders'),
+    getOrderDetails: (orderId) => api.get(`/orders/${orderId}`),
+    updateOrderStatus: (orderId, statusId) => api.put(`/orders/${orderId}/status`, { statusId }),
+    cancelOrder: (orderId) => api.post(`/orders/${orderId}/cancel`),
+    getOrderStatuses: () => api.get('/orders/statuses'),
+
+    // Admin endpoints
+    getAllOrders: () => api.get('/orders/all'),
+    searchOrders: (query) => api.get('/orders/search', { params: query })
+};
+
 
 export const cartApi = {
     getCart: () => api.get('/cart'),
@@ -51,7 +64,7 @@ export const cartApi = {
     }),
     removeFromCart: (cartItemID) => api.delete(`/cart/remove/${cartItemID}`),
     clearCart: () => api.delete('/cart/clear'),
-    checkout: () => api.post('/cart/checkout')
+    checkout: (deliveryOption) => api.post('/checkout', { deliveryOption })
     
 };
 export default api;

@@ -90,7 +90,6 @@ export const CartProvider = ({ children }) => {
                 ];
             });
 
-            // Update stock (subtract the quantity added)
             updateProductStock(product.id, -quantityToAdd);
         } catch (error) {
             console.error('Failed to add to cart:', error);
@@ -104,8 +103,6 @@ export const CartProvider = ({ children }) => {
             if (itemToRemove) {
                 await cartApi.removeFromCart(itemToRemove.cartItemID);
                 setCartItems(prevItems => prevItems.filter(item => item.productID !== productID));
-
-                // Update stock (add back the quantity removed)
                 updateProductStock(productID, itemToRemove.quantity);
             }
         } catch (error) {
@@ -144,7 +141,6 @@ export const CartProvider = ({ children }) => {
                     )
                 );
 
-                // Update stock based on the quantity difference
                 updateProductStock(productID, quantityDifference);
             }
         } catch (error) {
@@ -154,21 +150,25 @@ export const CartProvider = ({ children }) => {
 
     const clearCart = async () => {
         try {
-            // First create a map of product IDs and their quantities
-            const stockUpdates = {};
-            cartItems.forEach(item => {
-                stockUpdates[item.productID] = (stockUpdates[item.productID] || 0) + item.quantity;
-            });
-
             await cartApi.clearCart();
             setCartItems([]);
-
-            // Update stock for all products in the cart
-            Object.entries(stockUpdates).forEach(([productID, quantity]) => {
-                updateProductStock(productID, quantity);
-            });
         } catch (error) {
+            if (error.response?.status === 404) {
+                console.warn('Cart already cleared or deactivated.');
+                setCartItems([]);
+                return;
+            }
             console.error('Failed to clear cart:', error);
+            throw error;
+        }
+    };
+
+    const checkout = async (deliveryOption) => {
+        try {
+            const response = await cartApi.checkout({ deliveryOption });
+            return response.data;
+        } catch (error) {
+            console.error('Checkout failed:', error);
             throw error;
         }
     };
@@ -187,11 +187,13 @@ export const CartProvider = ({ children }) => {
             removeFromCart,
             updateQuantity,
             clearCart,
+            checkout,
             totalItems,
             totalPrice,
             isCartOpen,
             setIsCartOpen,
-            productStockUpdates
+            productStockUpdates,
+            setCartItems // allow manual reset from frontend if needed
         }}>
             {children}
         </CartContext.Provider>
