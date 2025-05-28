@@ -25,16 +25,15 @@ namespace SwiftServe.Controllers
         }
 
         [HttpPost]
-
         [Authorize]
-        public async Task<ActionResult<CheckoutResultDto>> Checkout()
+        public async Task<ActionResult<CheckoutResultDto>> Checkout([FromBody] CheckoutRequestDto request)
         {
             var userId = GetUserId();
             if (userId == null) return Unauthorized("User ID not found in token.");
 
             try
             {
-                var result = await _cartService.CheckoutAsync(userId.Value);
+                var result = await _cartService.CheckoutAsync(userId.Value, request.DeliveryOption);
                 return Ok(result);
             }
             catch (ArgumentException ex)

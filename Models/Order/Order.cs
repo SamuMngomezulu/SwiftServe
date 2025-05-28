@@ -1,9 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using SwiftServe.Models.Carts;
 
 namespace SwiftServe.Models.Orders
 {
+    public enum DeliveryOption
+    {
+        PickUp = 1,
+        Deliver = 2
+    }
+
     public class Order
     {
         [Key]
@@ -21,6 +27,9 @@ namespace SwiftServe.Models.Orders
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
+
+        // New property added for delivery method
+        public DeliveryOption DeliveryOption { get; set; }
 
         public virtual Cart Cart { get; set; }
         public virtual OrderStatus OrderStatus { get; set; }

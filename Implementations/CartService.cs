@@ -6,7 +6,7 @@ using SwiftServe.Models.Carts;
 using SwiftServe.Models.Orders;
 using SwiftServe.Dtos;
 using SwiftServe.Models.Catalogue;
-using Microsoft.Extensions.Logging;
+
 
 namespace SwiftServe.Implementations
 {
@@ -215,7 +215,7 @@ namespace SwiftServe.Implementations
             return cart?.CartItems.Any(ci => ci.ProductID == productId) ?? false;
         }
 
-        public async Task<CheckoutResultDto> CheckoutAsync(int userId)
+        public async Task<CheckoutResultDto> CheckoutAsync(int userId, DeliveryOption deliveryOption)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
             try
@@ -245,7 +245,8 @@ namespace SwiftServe.Implementations
                     CartID = cart.CartID,
                     OrderStatusID = 1, // Processing
                     OrderDate = DateTime.UtcNow,
-                    TotalAmount = cart.TotalPrice
+                    TotalAmount = cart.TotalPrice,
+                    DeliveryOption = deliveryOption
                 };
                 _context.Orders.Add(order);
 
@@ -274,7 +275,8 @@ namespace SwiftServe.Implementations
                     Success = true,
                     OrderID = order.OrderID,
                     TotalAmount = order.TotalAmount,
-                    OrderStatus = "Processing"
+                    OrderStatus = "Processing",
+                    DeliveryOption = deliveryOption.ToString()
                 };
             }
             catch

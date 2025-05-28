@@ -1,5 +1,6 @@
-﻿using SwiftServe.Models.Carts;
-using SwiftServe.Dtos;
+﻿using SwiftServe.Dtos;
+using SwiftServe.Models.Carts;
+using SwiftServe.Models.Orders;
 
 namespace SwiftServe.Interfaces
 {
@@ -15,6 +16,6 @@ namespace SwiftServe.Interfaces
         Task<bool> ProductExistsInCartAsync(int userId, int productId);
 
         // Add this method
-        Task<CheckoutResultDto> CheckoutAsync(int userId);
+        Task<CheckoutResultDto> CheckoutAsync(int userId, DeliveryOption deliveryOption);
     }
 }

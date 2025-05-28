@@ -7,6 +7,7 @@
         public string StatusName { get; set; }
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
+        public string DeliveryOption { get; set; } // "PickUp" or "Deliver"
         public List<CartItemResponseDto> Items { get; set; }
     }
 }

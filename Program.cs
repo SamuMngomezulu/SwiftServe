@@ -37,6 +37,7 @@ builder.Services.AddScoped<CloudinaryService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 
 
 
