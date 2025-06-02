@@ -1,14 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getOrders, getOrderStatuses, searchOrders } from '../services/OrderService';
+import {
+    getOrders,
+    getOrderStatuses,
+    searchOrders,
+    updateOrderStatus,
+    cancelOrder
+} from '../services/OrderService';
 import OrderCard from '../cart/OrderCard';
-
+import StatusUpdateModal from '../context/StatusUpdateModel';
+import ConfirmationModal from '../context/ConfirmationModal';
 
 const OrderManagementPage = () => {
+    const { hasRole } = useAuth();
     const [orders, setOrders] = useState([]);
     const [statuses, setStatuses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [showStatusModal, setShowStatusModal] = useState(false);
+    const [showCancelModal, setShowCancelModal] = useState(false);
     const [filters, setFilters] = useState({
         status: '',
         dateFrom: '',
@@ -57,6 +68,44 @@ const OrderManagementPage = () => {
         });
         const data = await getOrders(true);
         setOrders(data);
+    };
+
+    const handleStatusUpdate = async (statusId) => {
+        try {
+            setLoading(true);
+            await updateOrderStatus(selectedOrder.orderID, statusId);
+            const updatedOrders = await getOrders(true);
+            setOrders(updatedOrders);
+            setShowStatusModal(false);
+        } catch (err) {
+            setError(err.message || 'Failed to update status');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleCancelOrder = async () => {
+        try {
+            setLoading(true);
+            await cancelOrder(selectedOrder.orderID);
+            const updatedOrders = await getOrders(true);
+            setOrders(updatedOrders);
+            setShowCancelModal(false);
+        } catch (err) {
+            setError(err.message || 'Failed to cancel order');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const openStatusModal = (order) => {
+        setSelectedOrder(order);
+        setShowStatusModal(true);
+    };
+
+    const openCancelModal = (order) => {
+        setSelectedOrder(order);
+        setShowCancelModal(true);
     };
 
     if (loading) return <div className="loading-spinner">Loading orders...</div>;
@@ -115,10 +164,30 @@ const OrderManagementPage = () => {
                             key={order.orderID}
                             order={order}
                             isAdmin={true}
+                            onStatusUpdate={() => openStatusModal(order)}
+                            onCancelOrder={() => openCancelModal(order)}
                         />
                     ))
                 )}
             </div>
+
+            {showStatusModal && (
+                <StatusUpdateModal
+                    currentStatus={selectedOrder?.statusName}
+                    statuses={statuses}
+                    onUpdate={handleStatusUpdate}
+                    onClose={() => setShowStatusModal(false)}
+                />
+            )}
+
+            {showCancelModal && (
+                <ConfirmationModal
+                    title="Confirm Cancellation"
+                    message={`Are you sure you want to cancel order #${selectedOrder?.orderID}?`}
+                    onConfirm={handleCancelOrder}
+                    onCancel={() => setShowCancelModal(false)}
+                />
+            )}
         </div>
     );
 };
