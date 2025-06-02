@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { walletApi } from '../services/api';
 import '../styles/wallet.css';
@@ -9,6 +10,8 @@ const WalletPage = () => {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('all');
     const [balance, setBalance] = useState(0);
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -120,7 +123,11 @@ const WalletPage = () => {
                                     </div>
                                     <div className="cell">
                                         {transaction.orderID && (
-                                            <button className="details-btn">
+                                            // In the transaction row where the View Order button is:
+                                            <button
+                                                className="details-btn"
+                                                onClick={() => navigate(`/orders/${transaction.orderID}`)}
+                                            >
                                                 View Order
                                             </button>
                                         )}

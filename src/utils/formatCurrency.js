@@ -4,3 +4,5 @@ export const formatCurrency = (value) =>
         style: 'currency',
         currency: 'ZAR',
     }).format(value);
+
+

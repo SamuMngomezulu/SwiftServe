@@ -16,6 +16,7 @@ import OrderManagementPage from './components/pages/OrderManagementPage';
 import MyOrdersPage from './components/pages/MyOrdersPage';
 import CheckoutPage from './components/pages/CheckoutPage';
 import OrderConfirmationPage from './components/pages/OrderConfirmationPage';
+import OrderDetailsPage from './components/pages/OrderDetailsPage';
 
 
 
@@ -34,6 +35,7 @@ function App() {
                         <Route path="/order-management" element={<OrderManagementPage />} />
                         <Route path="/checkout" element={<CheckoutPage />} />
                         <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+                        <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
 
                         {/* Public product listing */}
                         <Route
