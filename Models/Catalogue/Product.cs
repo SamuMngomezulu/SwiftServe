@@ -30,6 +30,7 @@ namespace SwiftServe.Models.Catalogue
         [Required(ErrorMessage = "Stock quantity is required.")]
         [Range(0, int.MaxValue, ErrorMessage = "Stock quantity must be zero or more.")]
         public int ProductStockQuantity { get; set; }
+        public int ReservedStock { get; set; }
 
         [Required(ErrorMessage = "Product availability must be specified.")]
         public bool IsAvailable { get; set; }

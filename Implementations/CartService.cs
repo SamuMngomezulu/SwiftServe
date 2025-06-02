@@ -48,18 +48,31 @@ namespace SwiftServe.Implementations
             return cart;
         }
 
-        private void UpdateProductStock(Product product, int quantityDelta)
+        private void UpdateProductStock(Product product, int quantityDelta, bool isReservation = false)
         {
-            product.ProductStockQuantity -= quantityDelta;
-            if (product.ProductStockQuantity <= 0)
+            if (isReservation)
             {
-                product.ProductStockQuantity = 0;
-                product.IsAvailable = false;
+                product.ReservedStock += quantityDelta;
+
+                // Ensure we don't reserve more than available
+                if (product.ProductStockQuantity - product.ReservedStock < 0)
+                {
+                    throw new ArgumentException("Insufficient stock available");
+                }
             }
             else
             {
-                product.IsAvailable = true;
+                // Actual stock deduction (during checkout)
+                product.ProductStockQuantity -= quantityDelta;
+                product.ReservedStock -= quantityDelta; // Release the reservation
+
+                if (product.ProductStockQuantity <= 0)
+                {
+                    product.ProductStockQuantity = 0;
+                    product.IsAvailable = false;
+                }
             }
+
             _context.Products.Update(product);
         }
 
@@ -83,7 +96,8 @@ namespace SwiftServe.Implementations
             if (product == null || !product.IsAvailable)
                 throw new ArgumentException("Product not available");
 
-            if (product.ProductStockQuantity < request.Quantity)
+            // Check available stock (total stock minus reserved)
+            if (product.ProductStockQuantity - product.ReservedStock < request.Quantity)
                 throw new ArgumentException("Insufficient stock available");
 
             var cart = await EnsureActiveCartAsync(userId);
@@ -91,9 +105,6 @@ namespace SwiftServe.Implementations
 
             if (existingItem != null)
             {
-                if (product.ProductStockQuantity < request.Quantity)
-                    throw new ArgumentException("Insufficient stock available");
-
                 existingItem.Quantity += request.Quantity;
             }
             else
@@ -107,7 +118,8 @@ namespace SwiftServe.Implementations
                 cart.CartItems.Add(existingItem);
             }
 
-            UpdateProductStock(product, request.Quantity);
+            // Reserve the stock (but don't deduct yet)
+            UpdateProductStock(product, request.Quantity, true);
             await UpdateAndSaveCartTotal(cart);
 
             return _mapper.Map<CartItemResponseDto>(existingItem);
@@ -125,14 +137,21 @@ namespace SwiftServe.Implementations
 
             if (cartItem == null) return null;
 
-            int quantityDifference = request.Quantity - cartItem.Quantity;
             var product = cartItem.Product;
+            int quantityDifference = request.Quantity - cartItem.Quantity;
 
-            if (quantityDifference > 0 && product.ProductStockQuantity < quantityDifference)
-                throw new ArgumentException("Insufficient stock available");
+            if (quantityDifference > 0)
+            {
+                // Check if we have enough available stock for the increase
+                int availableStock = product.ProductStockQuantity - product.ReservedStock;
+                if (availableStock < quantityDifference)
+                    throw new ArgumentException("Insufficient stock available");
+            }
 
+            // Update the reserved stock
+            UpdateProductStock(product, quantityDifference, true);
             cartItem.Quantity = request.Quantity;
-            UpdateProductStock(product, quantityDifference);
+
             await UpdateAndSaveCartTotal(cartItem.Cart);
 
             return _mapper.Map<CartItemResponseDto>(cartItem);
@@ -150,7 +169,8 @@ namespace SwiftServe.Implementations
             var product = cartItem.Product;
             if (product != null)
             {
-                UpdateProductStock(product, -cartItem.Quantity);
+                // Release the reserved stock
+                UpdateProductStock(product, -cartItem.Quantity, true);
             }
 
             var cart = cartItem.Cart;
@@ -170,7 +190,8 @@ namespace SwiftServe.Implementations
                 var product = await _context.Products.FindAsync(item.ProductID);
                 if (product != null)
                 {
-                    UpdateProductStock(product, -item.Quantity);
+                    // Release all reserved stock for each item
+                    UpdateProductStock(product, -item.Quantity, true);
                 }
             }
 
@@ -231,15 +252,22 @@ namespace SwiftServe.Implementations
                 if (wallet == null || wallet.Balance < cart.TotalPrice)
                     throw new ArgumentException("Insufficient wallet balance");
 
+                // Verify stock and actually deduct quantities (no longer just reserving)
                 foreach (var item in cart.CartItems)
                 {
                     var product = await _context.Products.FindAsync(item.ProductID);
-                    if (product == null || !product.IsAvailable || product.ProductStockQuantity < item.Quantity)
+                    if (product == null || !product.IsAvailable ||
+                        product.ProductStockQuantity < item.Quantity)
                     {
-                        throw new InvalidOperationException($"Product {product?.ProductName ?? item.ProductID.ToString()} is not available in the requested quantity.");
+                        throw new InvalidOperationException(
+                            $"Product {product?.ProductName ?? item.ProductID.ToString()} is not available in the requested quantity.");
                     }
+
+                    // Now actually deduct the stock (not just reserving)
+                    UpdateProductStock(product, item.Quantity);
                 }
 
+                // Rest of checkout logic remains the same...
                 var order = new Order
                 {
                     CartID = cart.CartID,
@@ -285,5 +313,6 @@ namespace SwiftServe.Implementations
                 throw;
             }
         }
+
     }
 }
