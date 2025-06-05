@@ -11,5 +11,8 @@ namespace SwiftServe.Interfaces
         Task UpdateOrderStatusAsync(int orderId, int statusId);
         Task<List<OrderStatusDto>> GetOrderStatusesAsync();
         Task CancelOrderAsync(int userId, int orderId);
+
+        // New method to get all orders for Super User
+        Task<List<OrderDto>> GetAllOrdersAsync();
     }
 }

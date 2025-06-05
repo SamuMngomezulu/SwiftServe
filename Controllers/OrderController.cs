@@ -50,7 +50,7 @@ namespace SwiftServe.Controllers
         }
 
         [HttpPut("{orderId}/status")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Super User")]
         public async Task<ActionResult> UpdateOrderStatus(int orderId, [FromBody] UpdateOrderStatusDto request)
         {
             try
@@ -63,6 +63,15 @@ namespace SwiftServe.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [Authorize(Roles = "Super User")]
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllOrders()
+        {
+            var orders = await _orderService.GetAllOrdersAsync();
+            return Ok(orders);
+        }
+
 
         [HttpGet("statuses")]
         public async Task<ActionResult<List<OrderStatusDto>>> GetOrderStatuses()

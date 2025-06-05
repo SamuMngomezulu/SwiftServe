@@ -131,6 +131,101 @@ namespace SwiftServe.Controllers
             {
                 Success = true,
                 Message = "User and wallet deleted successfully"
+            });    
+
+
+        }
+
+        // Controllers/UsersController.cs
+        [HttpGet]
+        [Authorize(Roles = "Admin, Super User")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userRepository.GetAllUsersAsync();
+            var userDtos = users.Select(u => new UserDto
+            {
+                UserID = u.UserID,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Email = u.UserEmail,
+                Role = u.Role.RoleName,
+                Balance = u.Wallet.Balance
+            });
+
+            return Ok(userDtos);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Super User")]
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    Success = false,
+                    Errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                });
+            }
+
+            try
+            {
+                if (await _userRepository.UserExistsByEmailAsync(dto.Email))
+                {
+                    return Conflict(new
+                    {
+                        Success = false,
+                        Message = "Email already registered"
+                    });
+                }
+
+                var user = await _userRepository.RegisterUserAsync(new UserRegistrationDto
+                {
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName,
+                    Email = dto.Email,
+                    Password = dto.Password
+                });
+
+                // Update role if different from default
+                if (dto.RoleID != 3)
+                {
+                    await _userRepository.UpdateUserRoleAsync(user.UserID, dto.RoleID);
+                }
+
+                return Ok(new
+                {
+                    Success = true,
+                    Message = "User created successfully",
+                    UserId = user.UserID
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "User creation error");
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Message = "An error occurred during user creation"
+                });
+            }
+        }
+
+        [HttpPut("{userId}")]
+        [Authorize(Roles = "Super User")]
+        public async Task<IActionResult> UpdateUser(int userId, [FromBody] UserUpdateDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var result = await _userRepository.UpdateUserAsync(userId, dto);
+            if (!result) return NotFound();
+
+            return Ok(new
+            {
+                Success = true,
+                Message = "User updated successfully"
             });
         }
     }

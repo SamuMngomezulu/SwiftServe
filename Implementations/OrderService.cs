@@ -128,8 +128,16 @@ namespace SwiftServe.Implementations
             }
         }
 
- 
-       
+        public async Task<List<OrderDto>> GetAllOrdersAsync()
+        {
+            var orders = await _context.Orders
+                .Include(o => o.OrderStatus)
+                .ToListAsync();
+
+            return _mapper.Map<List<OrderDto>>(orders);
+        }
+
+
         private OrderDto MapToOrderDto(Order order)
         {
             var dto = _mapper.Map<OrderDto>(order);

@@ -79,5 +79,35 @@ namespace SwiftServe.Implementations
                 .FirstOrDefaultAsync(u => u.UserEmail == email);
         }
 
+        // Implementations/UserRepository.cs
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _context.Users
+                .Include(u => u.Role)
+                .Include(u => u.Wallet)
+                .ToListAsync();
+        }
+
+        public async Task<bool> UpdateUserAsync(int userId, UserUpdateDto updateDto)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null) return false;
+
+            if (!string.IsNullOrEmpty(updateDto.FirstName))
+                user.FirstName = updateDto.FirstName;
+
+            if (!string.IsNullOrEmpty(updateDto.LastName))
+                user.LastName = updateDto.LastName;
+
+            if (!string.IsNullOrEmpty(updateDto.Email))
+                user.UserEmail = updateDto.Email;
+
+            if (updateDto.RoleID.HasValue)
+                user.RoleID = updateDto.RoleID.Value;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
