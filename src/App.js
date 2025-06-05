@@ -12,11 +12,14 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import WalletPage from './components/wallet/WalletPage';
 import DepositPage from './components/wallet/DepositPage';
-import OrderManagementPage from './components/pages/OrderManagementPage';
 import MyOrdersPage from './components/pages/MyOrdersPage';
 import CheckoutPage from './components/pages/CheckoutPage';
 import OrderConfirmationPage from './components/pages/OrderConfirmationPage';
-import OrderDetailsPage from './components/pages/OrderDetailsPage';
+import './App.css';
+import OrderManagement from './components/products/OrderManagement';
+import UserList from './components/users/UserList';
+import UserForm from './components/users/UserForm';
+
 
 
 
@@ -32,10 +35,13 @@ function App() {
                         <Route path="/wallet" element={<WalletPage />} />
                         <Route path="/deposit" element={<DepositPage />} />
                         <Route path="/my-orders" element={<MyOrdersPage />} />
-                        <Route path="/order-management" element={<OrderManagementPage />} />
                         <Route path="/checkout" element={<CheckoutPage />} />
+                        <Route path="/order-management" element={<OrderManagement />} />
                         <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
-                        <Route path="/orders/:orderId" element={<OrderDetailsPage />} />
+                        <Route path="/users" element={<UserList />} />
+                        <Route path="/users/create" element={<UserForm isEdit={false} />} />
+                        <Route path="/users/edit/:userId" element={<UserForm isEdit={true} />} />
+                        
 
                         {/* Public product listing */}
                         <Route
@@ -60,7 +66,7 @@ function App() {
                                 </RequireAuth>
                             }
                         />
-                     
+
 
                     </Routes>
                 </CartProvider>

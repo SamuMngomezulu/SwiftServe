@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { walletApi } from '../services/api';
 import { useNavigate } from 'react-router-dom';
-import '../styles/deposit.css';
 import Layout from '../layout/layout'; 
 
 const DepositPage = () => {

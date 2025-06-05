@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import './AuthForm.css';
+
 
 const Register = ({ onRegisterSuccess }) => {
     const [formData, setFormData] = useState({
@@ -56,7 +56,7 @@ const Register = ({ onRegisterSuccess }) => {
                     if (onRegisterSuccess) onRegisterSuccess();
                 }, 2000);
             }
-else {
+            else {
                 setError(result.message || 'Registration failed. Please try again.');
             }
         } catch (err) {

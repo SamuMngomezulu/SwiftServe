@@ -1,20 +1,114 @@
-/* Root variables for consistent design */
+
 :root {
-    --accent-color: #2ecc71; /* Green accent */
-    --accent-hover: #27ae60; /* Darker green on hover */
-    --gray-dark: #333; /* Dark gray text */
-    --gray-light: #f5f5f5; /* Light gray background */
-    --text-light: #777; /* Light gray text */
-    --bg-dark: #1a1a1a; /* Dark background */
-    --white: #ffffff; /* White color for text */
+    --accent-color: #2ecc71; /* Green accent - Consistent across App.css, AuthForm.css, sidebar.css */
+    --accent-hover: #27ae60; /* Darker green on hover - From App.css */
+    --white: #ffffff; /* White color for text/backgrounds - Consistent */
+    --bg-dark: #1a1a1a; /* Dark background for main App/App-header - From App.css */
+    /* General Text & Backgrounds (from previous styles.css and App.css) */
+
+    --wallet-max-width: 1200px; /* From wallet.css --max-width */
+    --wallet-header-font-size: 2rem; /* From wallet.css */
+    --wallet-balance-font-size: 1.5rem; /* From wallet.css */
+    --wallet-tab-padding: 0.75rem 1.5rem; /* From wallet.css */
+    --wallet-badge-radius: 12px; /* From wallet.css */
+    --wallet-badge-font-size: 0.85rem; /* From wallet.css */
+    --wallet-btn-radius: 0.5rem; /* From wallet.css */
+    --wallet-table-border-color: #eee; /* From wallet.css */
+    --wallet-table-row-hover-bg: #f5f5f5; /* From wallet.css */
+    --wallet-tab-border-color: #ddd; /* From wallet.css */
+
+
+    --primary-color: #111111; /* General font color / dark primary text */
+    --secondary-color: var(--white); /* General light background/text, mapped to --white */
+    --font-color: var(--primary-color); /* General font color for body */
+    --gray-light: #f5f5f5; /* Light gray background - From App.css (was #f8f9fa in AuthForm/styles) */
+    --gray-medium: #e0e0e0; /* Medium gray for secondary buttons etc. */
+    --gray-dark: #333; /* Dark gray text - From App.css (was #444444 in styles.css) */
+    --text-light: #777; /* Light gray text - From App.css */
+    --text-muted: #666666; /* Muted text color */
+    /* Order Specific Variables */
+    --order-card-border-left-processing: #ffc107; /* yellow */
+    --order-card-border-left-shipped: #17a2b8; /* teal */
+    --order-card-border-left-completed: #28a745; /* green */
+    --order-card-border-left-canceled: #dc3545; /* red */
+
+    --order-summary-bg: #f8f9fa;
+    --order-summary-text-dark: #212529;
+    --order-summary-text-muted: #6c757d;
+    --order-summary-delivery-bg: #e2f3ff;
+    --order-summary-delivery-text: #0d6efd;
+    --order-item-border: #eee;
+    --confirmation-success-icon-color: #28a745;
+    --confirmation-card-border-radius: 12px;
+    --confirmation-card-box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    --confirmation-status-processing-color: #ffc107;
+    --confirmation-button-bg-shopping: #f0f0f0;
+    --confirmation-button-text-shopping: #333;
+
+    /* Status Colors */
+
+    --danger-color: #c73636; /* Danger/error text */
+    --success-bg: #e6f4ea; /* Success message background */
+    --error-bg: #fcebea; /* Error message background */
+    /* Borders & Shadows */
+
+    --border-color: #e0e0e0; /* General light border color */
+    --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* General box shadow */
+    --border-radius: 8px; /* General border radius */
+    /* Spacing & Transitions */
+
+    --space-unit: 1rem; /* Base spacing unit */
+    --transition: all 0.2s ease-in-out;
+    --sidebar-bg-color: #333333;
+    --sidebar-border-color: #444444;
+    --sidebar-nav-link-color: rgba(255, 255, 255, 0.75);
+    --sidebar-footer-text-color: rgba(255, 255, 255, 0.7);
+    --sidebar-user-role-color: rgba(255, 255, 255, 0.5);
 }
 
-/* Main App container */
+/* ===================================
+   Global Reset & Base Styling
+=================================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    transition: var(--transition);
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; /* Prioritized from old styles.css */
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: var(--secondary-color); /* Using the mapped secondary-color (white) */
+    color: var(--font-color); /* Using mapped font-color (primary-color) */
+    overflow-x: hidden;
+}
+
+    /* Scrollbar Styling */
+    body::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    body::-webkit-scrollbar-thumb {
+        background-color: var(--accent-color);
+        border-radius: var(--border-radius);
+    }
+
+        body::-webkit-scrollbar-thumb:hover {
+            background-color: var(--accent-hover);
+        }
+
+/* ===================================
+   Main App Container (Original App.css styles)
+=================================== */
 .App {
     text-align: center;
     background-color: var(--bg-dark);
     color: var(--white);
-    height: 100vh; /* Full height */
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -66,7 +160,7 @@
 
     .App-link:hover {
         color: var(--accent-hover);
-        background-color: rgba(0, 0, 0, 0.1); /* subtle background on hover */
+        background-color: rgba(0, 0, 0, 0.1);
     }
 
 /* Logo spin animation */
@@ -80,7 +174,7 @@
     }
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments for App-specific elements */
 @media (max-width: 768px) {
     .App-header {
         font-size: calc(12px + 2vmin);
@@ -99,3 +193,2124 @@
         font-size: 1rem;
     }
 }
+
+
+/* ===================================
+   Elements (Moved from old styles.css)
+=================================== */
+a {
+    text-decoration: none;
+    color: var(--accent-color);
+}
+
+    a:hover {
+        color: var(--accent-hover);
+    }
+
+button {
+    font-family: inherit;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: var(--transition);
+    color: var(--white); /* Keep text white by default */
+    background-color: var(--accent-color);
+}
+
+    button:hover {
+        background-color: var(--accent-hover);
+    }
+
+    /* Button Variants */
+    button.secondary {
+        background-color: var(--gray-medium);
+        color: var(--font-color);
+    }
+
+        button.secondary:hover {
+            background-color: #d0d0d0;
+        }
+
+    button.danger {
+        background-color: var(--danger-color);
+    }
+
+        button.danger:hover {
+            background-color: #a52d2d;
+        }
+
+/* ===================================
+   Layout & Containers (Moved from old styles.css)
+=================================== */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--space-unit);
+}
+
+/* Wrapper for auth pages (Moved and adapted from AuthForm.css / old styles.css) */
+.auth-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+    background-color: var(--gray-light); /* Using App.css's gray-light */
+}
+
+/* Auth Specific Styles (Moved and adapted from AuthForm.css / old styles.css) */
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--white);
+    border-radius: 12px; /* Kept from AuthForm.css for specific look */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Kept from AuthForm.css for specific look */
+    font-family: 'Segoe UI', sans-serif; /* Kept specific for auth form */
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+    .form-group label {
+        font-weight: 500;
+        color: var(--gray-dark); /* Mapped from --text-dark in AuthForm.css to App.css's --gray-dark */
+        font-size: 0.95rem;
+    }
+
+    .form-group input {
+        padding: 0.75rem;
+        border: 1px solid var(--border-color); /* Mapped from --gray-border in AuthForm.css */
+        border-radius: 6px; /* Kept from AuthForm.css */
+        font-size: 1rem;
+        transition: border-color 0.2s ease;
+    }
+
+        .form-group input:focus {
+            border-color: var(--accent-color);
+            outline: none;
+        }
+
+.auth-button {
+    padding: 0.75rem;
+    background-color: var(--accent-color);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 0.5rem;
+}
+
+    .auth-button:hover {
+        background-color: var(--accent-hover); /* Now using App.css's accent-hover */
+    }
+
+    .auth-button:disabled {
+        background-color: #95a5a6;
+        cursor: not-allowed;
+    }
+
+.auth-footer {
+    margin-top: 1.5rem;
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color); /* Mapped from --gray-border in AuthForm.css */
+}
+
+.auth-toggle {
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 0.5rem;
+    transition: color 0.2s ease;
+}
+
+    .auth-toggle:hover {
+        color: var(--accent-hover); /* Now using App.css's accent-hover */
+        text-decoration: underline;
+    }
+
+.error-message {
+    color: var(--danger-color); /* Mapped from #e74c3c */
+    background-color: var(--error-bg); /* Mapped from #fdedee */
+    padding: 0.75rem;
+    border-radius: 6px; /* Kept from AuthForm.css */
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.success-message {
+    color: var(--accent-color); /* Mapped from #27ae60, using main accent color */
+    background-color: var(--success-bg); /* Mapped from #e8f8f0 */
+    padding: 0.75rem;
+    border-radius: 6px;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Auth Page Container (previously .page-container from AuthForm.css) */
+.auth-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+    background-color: var(--gray-light);
+}
+
+/* ===================================
+   Sidebar Styles (Moved from sidebar.css)
+=================================== */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: var(--sidebar-bg-color); /* Uses new sidebar-specific variable */
+    color: var(--white); /* Mapped from --secondary-color in sidebar.css */
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.sidebar-logo {
+    padding: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--sidebar-border-color); /* Uses new sidebar-specific variable */
+    color: var(--white); /* Mapped from --secondary-color in sidebar.css */
+}
+
+    .sidebar-logo a {
+        color: var(--white); /* Mapped from --secondary-color in sidebar.css */
+        text-decoration: none;
+    }
+
+/* Sidebar Navigation */
+.sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
+    overflow-y: auto;
+}
+
+    .sidebar-nav ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-nav li {
+        margin: 0;
+    }
+
+    .sidebar-nav a {
+        display: block;
+        padding: 0.75rem 1.5rem;
+        color: var(--sidebar-nav-link-color); /* Uses new sidebar-specific variable */
+        font-weight: 500;
+        text-decoration: none;
+        transition: background-color 0.2s ease, color 0.2s ease, padding-left 0.2s ease;
+        border-left: 3px solid transparent;
+    }
+
+        .sidebar-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--accent-color);
+            padding-left: 1.75rem; /* Smooth sliding effect */
+        }
+
+    .sidebar-nav .active a {
+        background-color: rgba(39, 174, 96, 0.1);
+        color: var(--accent-color);
+        border-left: 3px solid var(--accent-color);
+    }
+
+/* Footer styles in sidebar */
+.sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid var(--sidebar-border-color); /* Uses new sidebar-specific variable */
+    font-size: 0.9rem;
+    color: var(--sidebar-footer-text-color); /* Uses new sidebar-specific variable */
+}
+
+/* User info styles */
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    color: var(--sidebar-user-role-color); /* Uses new sidebar-specific variable */
+    text-transform: capitalize;
+}
+
+/* Logout button */
+.logout-btn {
+    color: var(--sidebar-footer-text-color); /* Mapped to sidebar footer text color */
+    margin-top: 0.5rem;
+    transition: color 0.2s ease;
+    cursor: pointer;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+    .logout-btn:hover {
+        color: var(--accent-color);
+        text-decoration: underline;
+    }
+
+/* Wallet Balance Styles */
+.wallet-balance {
+    padding: 0.5rem 0;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid var(--sidebar-border-color);
+}
+
+    .wallet-balance h4 {
+        margin: 0 0 0.25rem 0;
+        font-size: 0.9rem;
+        color: var(--sidebar-footer-text-color);
+    }
+
+.balance-amount {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin: 0;
+}
+
+/* Responsive styles for mobile view */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+    .sidebar-nav a {
+        padding: 0.75rem 1rem;
+    }
+
+    .sidebar-logo {
+        padding: 1rem;
+    }
+}
+
+
+
+/* Text alignment */
+.text-center {
+    text-align: center;
+}
+
+/* Visibility */
+.hidden {
+    display: none;
+}
+
+/* Spacing - Padding */
+.p-1 {
+    padding: var(--space-unit);
+}
+
+.p-2 {
+    padding: calc(var(--space-unit) * 1.5);
+}
+
+.p-3 {
+    padding: calc(var(--space-unit) * 2);
+}
+
+/* Spacing - Margin Top */
+.mt-1 {
+    margin-top: var(--space-unit);
+}
+
+.mt-2 {
+    margin-top: calc(var(--space-unit) * 1.5);
+}
+
+.mt-3 {
+    margin-top: calc(var(--space-unit) * 2);
+}
+
+/* Spacing - Margin Bottom */
+.mb-1 {
+    margin-bottom: var(--space-unit);
+}
+
+.mb-2 {
+    margin-bottom: calc(var(--space-unit) * 1.5);
+}
+
+.mb-3 {
+    margin-bottom: calc(var(--space-unit) * 2);
+}
+
+/* Gap Utilities */
+.gap-1 {
+    gap: var(--space-unit);
+}
+
+.gap-2 {
+    gap: calc(var(--space-unit) * 1.5);
+}
+
+.walletContainer {
+    max-width: var(--wallet-max-width);
+    margin: 2rem auto;
+    padding-inline: var(--space-unit);
+}
+
+.wallet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--wallet-table-border-color); /* Using wallet-specific border */
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+    .wallet-header h1 {
+        font-size: var(--wallet-header-font-size);
+        color: var(--font-color); /* Using global font color */
+        margin: 0;
+    }
+
+.balance-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.1rem;
+}
+
+.current-balance {
+    font-size: var(--wallet-balance-font-size);
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+/* Tabs for transactions */
+.transaction-tabs {
+    display: flex;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--wallet-tab-border-color); /* Using wallet-specific tab border */
+}
+
+    .transaction-tabs button {
+        background-color: transparent;
+        border: none;
+        padding: var(--wallet-tab-padding);
+        cursor: pointer;
+        font-size: 1rem;
+        color: var(--text-muted); /* Using global text-muted */
+        border-bottom: 2px solid transparent;
+        transition: var(--transition);
+        font-weight: 500;
+        margin-right: 0.5rem; /* Space between tabs */
+    }
+
+        .transaction-tabs button:hover {
+            color: var(--accent-color);
+        }
+
+        .transaction-tabs button.active {
+            color: var(--accent-color);
+            border-bottom-color: var(--accent-color);
+            font-weight: 600;
+        }
+
+/* Transaction List Table */
+.transaction-list {
+    background-color: var(--white); /* Using global white */
+    border-radius: var(--border-radius); /* Using global border-radius */
+    box-shadow: var(--box-shadow); /* Using global box-shadow */
+    overflow-x: auto; /* For responsive tables */
+    margin-bottom: 2rem;
+}
+
+    .transaction-list table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .transaction-list th,
+    .transaction-list td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--wallet-table-border-color); /* Using wallet-specific border */
+    }
+
+    .transaction-list th {
+        background-color: var(--gray-light); /* Using global gray-light */
+        color: var(--gray-dark); /* Using global gray-dark */
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+
+    .transaction-list tbody tr:hover {
+        background-color: var(--wallet-table-row-hover-bg);
+    }
+
+/* Status Badges */
+.status-badge {
+    display: inline-block;
+    padding: 0.3em 0.6em;
+    border-radius: var(--wallet-badge-radius);
+    font-size: var(--wallet-badge-font-size);
+    font-weight: 600;
+    text-transform: capitalize;
+    color: var(--white);
+    text-align: center;
+}
+
+    .status-badge.completed {
+        background-color: var(--accent-color); /* Using global accent-color */
+    }
+
+    .status-badge.pending {
+        background-color: #f39c12; /* Orange */
+    }
+
+    .status-badge.failed {
+        background-color: var(--danger-color); /* Using global danger-color */
+    }
+
+/* Button */
+.details-btn {
+    padding: 0.5rem 1rem;
+    background-color: #3498db; /* Specific blue for details button */
+    color: var(--white); /* Using global white */
+    border: none;
+    border-radius: var(--wallet-btn-radius); /* Using wallet-specific button radius */
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: var(--transition);
+}
+
+    .details-btn:hover {
+        background-color: #2980b9;
+    }
+
+/* Loading State */
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    gap: 1rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top-color: var(--accent-color); /* Using global accent-color */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* No Transactions */
+.no-transactions {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted); /* Using global text-muted */
+}
+
+
+/* ===================================
+   Deposit Page Styles (Moved from deposit.css)
+=================================== */
+.deposit-page {
+    max-width: 500px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: var(--secondary-color); /* Using global secondary-color (white) */
+    border-radius: var(--border-radius); /* Using global border-radius */
+    box-shadow: var(--box-shadow); /* Using global box-shadow */
+}
+
+    .deposit-page h1 {
+        font-size: 1.75rem;
+        color: var(--font-color); /* Using global font-color */
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+    .deposit-page .form-group { /* Specificity for deposit page form-group */
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+        .deposit-page .form-group label { /* Specificity for deposit page form-group label */
+            font-weight: 500;
+            color: var(--text-muted); /* Using global text-muted */
+        }
+
+        .deposit-page .form-group input { /* Specificity for deposit page form-group input */
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 1px solid var(--border-color); /* Using global border-color */
+            border-radius: var(--border-radius); /* Using global border-radius */
+            transition: var(--transition);
+        }
+
+            .deposit-page .form-group input:focus { /* Specificity for deposit page form-group input focus */
+                outline: none;
+                border-color: var(--accent-color); /* Using global accent-color */
+                box-shadow: 0 0 0 2px rgba(42, 127, 98, 0.2);
+            }
+
+    .deposit-page button[type="submit"] { /* Specificity for deposit page submit button */
+        width: 100%;
+        padding: 0.75rem;
+        background-color: var(--accent-color); /* Using global accent-color */
+        color: var(--secondary-color); /* Using global secondary-color (white) */
+        font-weight: 600;
+        border: none;
+        border-radius: var(--border-radius); /* Using global border-radius */
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+        .deposit-page button[type="submit"]:hover { /* Specificity for deposit page submit button hover */
+            background-color: var(--accent-hover); /* Using global accent-hover */
+        }
+
+        .deposit-page button[type="submit"]:disabled { /* Specificity for deposit page submit button disabled */
+            background-color: var(--gray-medium); /* Using global gray-medium */
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+    .deposit-page .error { /* Specificity for deposit page error */
+        color: var(--danger-color); /* Using global danger-color */
+        margin-top: -1rem; /* Adjust as needed for spacing */
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+/* Transaction List Table */
+.transaction-list {
+    background-color: var(--white); /* Using global white */
+    border-radius: var(--border-radius); /* Using global border-radius */
+    box-shadow: var(--box-shadow); /* Using global box-shadow */
+    overflow-x: auto; /* For responsive tables */
+    margin-bottom: 2rem;
+}
+
+    .transaction-list table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .transaction-list th,
+    .transaction-list td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--wallet-table-border-color); /* Using wallet-specific border */
+    }
+
+    .transaction-list th {
+        background-color: var(--gray-light); /* Using global gray-light */
+        color: var(--gray-dark); /* Using global gray-dark */
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+
+    .transaction-list tbody tr:hover {
+        background-color: var(--wallet-table-row-hover-bg);
+    }
+
+/* Status Badges (ensure these are present, they are part of wallet.css and relate to the table) */
+.status-badge {
+    display: inline-block;
+    padding: 0.3em 0.6em;
+    border-radius: var(--wallet-badge-radius);
+    font-size: var(--wallet-badge-font-size);
+    font-weight: 600;
+    text-transform: capitalize;
+    color: var(--white);
+    text-align: center;
+}
+
+    .status-badge.completed {
+        background-color: var(--accent-color); /* Using global accent-color */
+    }
+
+    .status-badge.pending {
+        background-color: #f39c12; /* Orange */
+    }
+
+    .status-badge.failed {
+        background-color: var(--danger-color); /* Using global danger-color */
+    }
+
+/* Button (ensure this is present, it's used in the table for "View Order") */
+.details-btn {
+    padding: 0.5rem 1rem;
+    background-color: #3498db; /* Specific blue for details button */
+    color: var(--white); /* Using global white */
+    border: none;
+    border-radius: var(--wallet-btn-radius); /* Using wallet-specific button radius */
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: var(--transition);
+}
+
+    .details-btn:hover {
+        background-color: #2980b9;
+    }
+
+/* Loading State (ensure this is present, relevant for transaction list) */
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    gap: 1rem;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top-color: var(--accent-color); /* Using global accent-color */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* No Transactions (ensure this is present) */
+.no-transactions {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted); /* Using global text-muted */
+}
+
+/* ===================================
+   Order Management & My Orders Styles (Moved from order.css)
+=================================== */
+.orders-container {
+    padding: 20px;
+    max-width: var(--wallet-max-width); /* Reusing wallet max-width for consistency */
+    margin: 0 auto;
+}
+
+    .orders-container h1 {
+        margin-bottom: 20px;
+        color: var(--font-color);
+    }
+
+.orders-list {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+}
+
+.empty-orders {
+    text-align: center;
+    padding: 40px;
+    background: var(--gray-light);
+    border-radius: var(--border-radius);
+    color: var(--text-muted);
+}
+
+/* Reusing .loading-spinner and .error-message from existing App.css */
+/* .loading-spinner, .error-message styles are already defined globally */
+
+/* Order Management specific */
+.order-management-container {
+    padding: 20px;
+    max-width: var(--wallet-max-width); /* Reusing wallet max-width */
+    margin: 0 auto;
+}
+
+.order-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+    .order-filters select,
+    .order-filters input {
+        padding: 8px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 4px; /* Specific smaller radius for filters */
+        font-size: 1rem;
+        color: var(--font-color);
+        background-color: var(--secondary-color);
+    }
+
+    .order-filters button {
+        padding: 8px 12px;
+        font-size: 1rem;
+        border-radius: 4px;
+        /* Uses general button styles */
+    }
+
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+}
+
+    .order-table th,
+    .order-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .order-table th {
+        background-color: var(--gray-light);
+        color: var(--gray-dark);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+    }
+
+    .order-table tbody tr:hover {
+        background-color: var(--wallet-table-row-hover-bg); /* Reusing wallet hover color */
+    }
+
+.action-button {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    /* Uses general button styles */
+}
+
+/* ===================================
+   Order Card Styles (Moved from orderCard.css)
+=================================== */
+.order-card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    background: var(--secondary-color);
+    box-shadow: var(--box-shadow);
+}
+
+    .order-card.status-1 {
+        border-left: 4px solid var(--order-card-border-left-processing);
+    }
+
+    .order-card.status-2 {
+        border-left: 4px solid var(--order-card-border-left-shipped);
+    }
+
+    .order-card.status-3 {
+        border-left: 4px solid var(--order-card-border-left-completed);
+    }
+
+    .order-card.status-4 {
+        border-left: 4px solid var(--order-card-border-left-canceled);
+    }
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--order-item-border);
+}
+
+    .order-header h3 {
+        margin: 0;
+        color: var(--font-color);
+    }
+
+.order-date {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.order-summary-card { /* Renamed from .order-summary to avoid conflict with order-details-summary */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: var(--order-summary-bg);
+    padding: 10px;
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+    .order-summary-card span {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+.order-total {
+    background: var(--order-summary-bg);
+    color: var(--order-summary-text-dark);
+}
+
+.order-status-badge { /* Renamed from .order-status to avoid conflict with status-badge */
+    background: var(--gray-medium);
+    color: var(--gray-dark);
+}
+
+.delivery-method {
+    background: var(--order-summary-delivery-bg);
+    color: var(--order-summary-delivery-text);
+}
+
+.order-card-actions { /* Renamed from .order-actions for specificity */
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+    .order-card-actions select {
+        padding: 5px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+        background-color: var(--secondary-color);
+        color: var(--font-color);
+    }
+
+    .order-card-actions button {
+        padding: 5px 10px;
+        background: var(--gray-light);
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 0.9rem;
+        color: var(--font-color);
+    }
+
+.cancel-button {
+    background: #fff3f3;
+    border-color: #ffc9c9;
+    color: var(--danger-color);
+}
+
+    .cancel-button:hover {
+        background: #ffecec;
+    }
+
+.order-items-list { /* Renamed from .order-items for specificity */
+    margin-top: 15px;
+}
+
+    .order-items-list h4 {
+        margin-bottom: 10px;
+        color: var(--font-color);
+        font-size: 1.1rem;
+    }
+
+.order-item-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--order-item-border);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: var(--gray-dark);
+}
+
+.order-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--order-item-border);
+}
+
+    .order-item-row:last-child {
+        border-bottom: none;
+    }
+
+.item-details {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .item-details img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 4px;
+    }
+
+    .item-details span {
+        font-size: 0.9rem;
+        color: var(--font-color);
+    }
+
+.item-quantity,
+.item-price {
+    font-size: 0.9rem;
+    color: var(--font-color);
+    width: 60px; /* Adjust as needed */
+    text-align: right;
+}
+
+/* ===================================
+   Order Confirmation Page Styles (Moved from orderConfirmation.css)
+=================================== */
+.confirmation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px); /* Adjusted for potential header/footer */
+    padding: 20px;
+}
+
+.confirmation-card {
+    background: var(--secondary-color);
+    border-radius: var(--confirmation-card-border-radius);
+    box-shadow: var(--confirmation-card-box-shadow);
+    padding: 30px;
+    max-width: 600px;
+    width: 100%;
+}
+
+.confirmation-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.success-icon {
+    width: 60px;
+    height: 60px;
+    color: var(--confirmation-success-icon-color);
+    margin-bottom: 15px;
+}
+
+.confirmation-header h1 {
+    margin: 0;
+    color: var(--font-color);
+    font-size: 1.8rem;
+}
+
+.order-number {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin-top: 5px;
+}
+
+.confirmation-details {
+    background: var(--gray-light);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border-color);
+}
+
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+
+    .detail-item span:first-child {
+        color: var(--text-muted);
+    }
+
+    .detail-item span:last-child {
+        font-weight: 500;
+        color: var(--font-color);
+    }
+
+.status-processing {
+    color: var(--confirmation-status-processing-color);
+    font-weight: 600;
+}
+
+.order-items-confirmation { /* Renamed from .order-items for specificity */
+    margin-bottom: 30px;
+}
+
+    .order-items-confirmation h3 {
+        margin-bottom: 15px;
+        color: var(--font-color);
+    }
+
+.order-item-confirmation { /* Renamed from .order-item for specificity */
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--order-item-border);
+}
+
+    .order-item-confirmation:last-child {
+        border-bottom: none;
+    }
+
+    .order-item-confirmation img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-right: 15px;
+    }
+
+    .order-item-confirmation div {
+        flex-grow: 1;
+    }
+
+    .order-item-confirmation h4 {
+        margin: 0 0 5px 0;
+        font-size: 1rem;
+        color: var(--font-color);
+    }
+
+    .order-item-confirmation span {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+
+    .order-item-confirmation > span:last-child {
+        font-weight: 600;
+        color: var(--font-color);
+    }
+
+.confirmation-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+    .confirmation-actions button {
+        padding: 10px 20px;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        text-decoration: none;
+        transition: var(--transition);
+        font-size: 1rem;
+    }
+
+.continue-shopping {
+    background-color: var(--confirmation-button-bg-shopping);
+    color: var(--confirmation-button-text-shopping);
+    border: 1px solid var(--border-color);
+}
+
+    .continue-shopping:hover {
+        background-color: var(--gray-medium);
+    }
+
+.view-orders {
+    background-color: var(--accent-color);
+    color: var(--white);
+    border: 1px solid var(--accent-color);
+}
+
+    .view-orders:hover {
+        background-color: var(--accent-hover);
+    }
+
+/* ===================================
+   Order Details Page Styles (Moved from orderDetails.css)
+=================================== */
+.order-details-container {
+    max-width: var(--wallet-max-width); /* Reusing wallet max-width */
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.order-details-header { /* Renamed from .order-header for specificity */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+    .order-details-header h1 {
+        color: var(--font-color);
+        font-size: 2rem;
+    }
+
+    .order-details-header .back-button { /* Specific back button style */
+        padding: 0.5rem 1rem;
+        background-color: var(--gray-medium);
+        color: var(--font-color);
+        border-radius: var(--border-radius);
+        font-size: 0.9rem;
+        text-decoration: none;
+    }
+
+        .order-details-header .back-button:hover {
+            background-color: var(--gray-dark);
+            color: var(--white);
+        }
+
+.order-details-summary { /* Renamed from .order-summary for specificity */
+    background-color: var(--gray-light);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+    .summary-item span:first-child {
+        font-weight: 500;
+        color: var(--text-muted);
+    }
+
+    .summary-item span:last-child {
+        font-weight: 600;
+        color: var(--font-color);
+    }
+
+.total-amount-details { /* Renamed from .total-amount for specificity */
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--accent-color);
+}
+
+.order-details-items { /* Renamed from .order-items for specificity */
+    margin-bottom: 2rem;
+}
+
+.items-table {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background-color: var(--secondary-color);
+    box-shadow: var(--box-shadow);
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    background-color: var(--gray-light);
+    padding: 1rem;
+    font-weight: 600;
+    color: var(--gray-dark);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.item-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    align-items: center;
+    color: var(--font-color);
+}
+
+    .item-row:hover {
+        background-color: var(--wallet-table-row-hover-bg); /* Reusing wallet hover color */
+    }
+
+.product-cell {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.order-product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.product-info h3 {
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+    color: var(--font-color);
+}
+
+.product-info span {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.order-details-actions { /* Renamed from .order-actions for specificity */
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+    .order-details-actions .danger { /* Using general .danger button style */
+        /* Specific overrides if needed, but should inherit from .btn-danger */
+    }
+
+/* src/components/OrderManagement.css */
+
+.order-management-container {
+    padding: 2rem;
+    max-width: var(--wallet-max-width); /* Reusing from App.css */
+    margin: 2rem auto;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    color: var(--font-color);
+}
+
+.order-management-container h1 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    font-size: var(--wallet-header-font-size);
+}
+
+.filters-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--gray-dark);
+    font-size: 0.9rem;
+}
+
+.filters-section input[type="text"],
+.filters-section input[type="date"],
+.filters-section select {
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    color: var(--font-color);
+    background-color: var(--white);
+    transition: border-color 0.3s ease;
+}
+
+.filters-section input[type="text"]:focus,
+.filters-section input[type="date"]:focus,
+.filters-section select:focus {
+    border-color: var(--accent-color);
+    outline: none;
+}
+
+.filter-actions {
+    grid-column: span / auto-fit; /* Allows buttons to span across columns if needed */
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    align-items: flex-end; /* Align buttons to the bottom of the filter group */
+}
+
+.filter-actions button {
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--wallet-btn-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Added border-color to transition */
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: var(--white);
+    border: 1px solid var(--accent-color); /* Added border */
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover); /* Keep border color consistent on hover */
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--accent-color);
+    color: var(--white);
+}
+
+
+/* Reusing table styles from App.css */
+.order-list-container {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background-color: var(--secondary-color);
+    box-shadow: var(--box-shadow);
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 0.8fr 1fr 1fr 1fr 1fr 1.5fr; /* Adjusted for actions column */
+    background-color: var(--gray-light);
+    padding: 1rem;
+    font-weight: 600;
+    color: var(--gray-dark);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.item-row {
+    display: grid;
+    grid-template-columns: 0.8fr 1fr 1fr 1fr 1fr 1.5fr; /* Adjusted for actions column */
+    padding: 1rem;
+    border-top: 1px solid var(--border-color);
+    align-items: center;
+    color: var(--font-color);
+}
+
+.item-row:hover {
+    background-color: var(--wallet-table-row-hover-bg); /* Reusing wallet hover color */
+}
+
+.order-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+    /* Update the order-actions button styles in App.css */
+    .order-actions button {
+        padding: 0.6rem 1rem;
+        border-radius: var(--wallet-btn-radius);
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        white-space: nowrap;
+    }
+
+.btn-details {
+    background-color: #d6eaf8; /* Soft blue for "details" */
+    color: var(--white);
+    border: 1px solid #3498db;
+}
+
+.btn-details:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+.btn-update-status {
+    background-color: #fceec1; /* Soft amber/yellow for "update" */
+    color: var(--white);
+    border: 1px solid #f39c12;
+}
+
+.btn-update-status:hover {
+    background-color: #e67e22;
+    border-color: #e67e22;
+}
+
+.btn-cancel {
+    background-color: #f9d6d5; /* Soft red/pink for "cancel" */
+    color: var(--white);
+    border: 1px solid #e74c3c;
+}
+
+.btn-cancel:hover:not(:disabled) {
+    background-color: #c0392b;
+    border-color: #c0392b;
+}
+
+.btn-cancel:disabled {
+    background-color: #cccccc;
+    border-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+/* Add this to your App.css file, preferably near other button styles */
+
+/* Order Management Action Buttons - More specific selectors */
+.order-list-container .order-actions .btn-details {
+    background-color: #5dade2 !important; /* Richer blue */
+    color: var(--white) !important;
+    border: 1px solid #3498db !important;
+}
+
+.order-list-container .order-actions .btn-details:hover {
+    background-color: #2980b9 !important;
+    border-color: #2980b9 !important;
+}
+
+.order-list-container .order-actions .btn-update-status {
+    background-color: #f5b041 !important; /* Richer amber */
+    color: var(--white) !important;
+    border: 1px solid #f39c12 !important;
+}
+
+.order-list-container .order-actions .btn-update-status:hover {
+    background-color: #e67e22 !important;
+    border-color: #e67e22 !important;
+}
+
+.order-list-container .order-actions .btn-cancel {
+    background-color: #ec7063 !important; /* Deeper red */
+    color: var(--white) !important;
+    border: 1px solid #e74c3c !important;
+}
+
+.order-list-container .order-actions .btn-cancel:hover:not(:disabled) {
+    background-color: #c0392b !important;
+    border-color: #c0392b !important;
+}
+
+.order-list-container .order-actions .btn-cancel:disabled {
+    background-color: #cccccc !important;
+    border-color: #cccccc !important;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Consistent UI Spacing & Behavior */
+.order-list-container .order-actions button {
+    padding: 0.6rem 1rem !important;
+    border-radius: var(--wallet-btn-radius) !important;
+    cursor: pointer;
+    font-size: 0.85rem !important;
+    transition: all 0.3s ease !important;
+    white-space: nowrap;
+    margin: 0.2rem;
+}
+
+
+
+.no-results {
+    text-align: center;
+    padding: 2rem;
+    color: var(--gray-dark);
+}
+
+/* Modal Styles - Reused and adapted from general modal patterns */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--white);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+}
+
+.order-details-modal {
+    max-width: 700px; /* Wider for details */
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.modal-content .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.modal-content .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--gray-dark);
+}
+
+.modal-content select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    color: var(--font-color);
+    background-color: var(--white);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.modal-actions button {
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--wallet-btn-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; /* Added border-color to transition */
+}
+
+/* Specifically target modal primary/secondary buttons if you want them styled like main page */
+.modal-actions .btn-primary {
+    background-color: var(--accent-color);
+    color: var(--white);
+    border: 1px solid var(--accent-color);
+}
+.modal-actions .btn-primary:hover {
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover);
+}
+
+.modal-actions .btn-secondary {
+    background-color: transparent;
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+}
+.modal-actions .btn-secondary:hover {
+    background-color: var(--accent-color);
+    color: var(--white);
+}
+
+
+/* Order Details Specific Styles */
+.order-details-modal p {
+    margin-bottom: 0.8rem;
+    color: var(--font-color);
+}
+
+.order-details-modal h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.order-items-list {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.order-item-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    background-color: var(--gray-light);
+    padding: 0.8rem 1rem;
+    font-weight: 600;
+    color: var(--gray-dark);
+    font-size: 0.9rem;
+}
+
+.order-item-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    padding: 0.8rem 1rem;
+    border-top: 1px solid var(--border-color);
+    align-items: center;
+}
+
+.order-item-row:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.loading, .error-message {
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.1rem;
+}
+
+.error-message {
+    color: #e74c3c;
+    font-weight: 600;
+}
+
+/* ... (existing styles) ... */
+
+.modal-close-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--gray-dark); /* Or any dark color */
+    transition: color 0.3s ease;
+}
+
+    .modal-close-button:hover {
+        color: var(--accent-color); /* Hover color */
+    }
+
+/* Ensure the order-details-modal takes precedence for width */
+.modal-content.order-details-modal {
+    max-width: 800px; /* Adjust as needed */
+}
+
+/* Make sure modal-actions buttons use the general button styles */
+.modal-actions .btn-primary,
+.modal-actions .btn-secondary {
+    /* These styles should already be correctly applied from earlier steps */
+    padding: 0.8rem 1.5rem;
+    border-radius: var(--wallet-btn-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+/* Ensure product-info text is visible */
+.order-details-modal .product-info h3 {
+    color: var(--font-color); /* Ensure text is visible against light background */
+}
+
+/* Status Update Modal Specific Styles */
+.status-update-modal {
+    max-width: 450px;
+    width: 90%;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 2rem;
+    position: relative;
+}
+
+    .status-update-modal .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+        .status-update-modal .modal-header h3 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+    .status-update-modal .close-button {
+        background: none;
+        border: none;
+        font-size: 1.8rem;
+        cursor: pointer;
+        color: var(--gray-dark);
+        transition: color 0.3s ease;
+        line-height: 1;
+        padding: 0.5rem;
+    }
+
+        .status-update-modal .close-button:hover {
+            color: var(--accent-color);
+        }
+
+    .status-update-modal .modal-body {
+        margin-bottom: 2rem;
+    }
+
+    .status-update-modal .status-info {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background-color: var(--gray-light);
+        border-radius: var(--border-radius);
+    }
+
+        .status-update-modal .status-info p {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--font-color);
+        }
+
+            .status-update-modal .status-info p strong {
+                color: var(--gray-dark);
+            }
+
+    .status-update-modal .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+        .status-update-modal .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--gray-dark);
+            font-size: 0.95rem;
+        }
+
+    .status-update-modal .form-control {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        color: var(--font-color);
+        background-color: var(--white);
+        transition: border-color 0.3s ease;
+    }
+
+        .status-update-modal .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.2);
+        }
+
+    .status-update-modal .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+    }
+
+    .status-update-modal .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+    .status-update-modal .btn-primary {
+        background-color: var(--accent-color);
+        color: var(--white);
+        border: 1px solid var(--accent-color);
+    }
+
+        .status-update-modal .btn-primary:hover {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        .status-update-modal .btn-primary:disabled {
+            background-color: var(--gray-medium);
+            border-color: var(--gray-medium);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+    .status-update-modal .btn-secondary {
+        background-color: transparent;
+        color: var(--accent-color);
+        border: 1px solid var(--accent-color);
+    }
+
+        .status-update-modal .btn-secondary:hover {
+            background-color: var(--accent-color);
+            color: var(--white);
+        }
+
+/* Form Styles */
+.form-group {
+    margin-bottom: var(--spacing-unit);
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--dark-gray);
+    }
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--text-color);
+    background-color: var(--white);
+    background-clip: padding-box;
+    border: 1px solid var(--medium-gray);
+    border-radius: var(--border-radius);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+    .form-control:focus {
+        color: var(--text-color);
+        background-color: var(--white);
+        border-color: var(--primary-color);
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+select.form-control {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 2.5rem; /* Space for custom arrow if needed */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+.form-text {
+    font-size: 0.875em;
+    color: var(--secondary-color);
+    margin-top: 0.25rem;
+    display: block;
+}
+
+
+/* Table Styles */
+.table {
+    width: 100%;
+    margin-bottom: var(--spacing-unit);
+    color: var(--text-color);
+    border-collapse: collapse;
+}
+
+    .table th,
+    .table td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid var(--medium-gray);
+    }
+
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid var(--medium-gray);
+        background-color: var(--light-gray);
+        color: var(--dark-gray);
+        text-align: left;
+    }
+
+    .table tbody + tbody {
+        border-top: 2px solid var(--medium-gray);
+    }
+
+.table-hover tbody tr:hover {
+    color: var(--text-color);
+    background-color: var(--wallet-table-row-hover-bg);
+}
+
+.table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Alert Messages */
+.alert {
+    padding: 0.75rem 1.25rem;
+    margin-bottom: var(--spacing-unit);
+    border: 1px solid transparent;
+    border-radius: var(--border-radius);
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it's on top */
+}
+
+.modal-content {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--medium-gray);
+}
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 1.75rem;
+        color: black;
+    }
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--dark-gray);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--border-radius);
+    transition: background-color 0.2s ease;
+}
+
+    .close-button:hover {
+        background-color: #2ecc71;
+    }
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--medium-gray);
+}
+
+    .form-actions .btn {
+        min-width: 100px;
+        padding: 0.75rem 1.25rem;
+    }
+
+/* User Form Specific Styles */
+.user-form {
+    background-color: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    .modal-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+        .form-actions .btn {
+            width: 100%;
+        }
+
+    .table th,
+    .table td {
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 0.5rem;
+    }
+
+    .user-form {
+        padding: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.3rem 0.6rem;
+    }
+}
+

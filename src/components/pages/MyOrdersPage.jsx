@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { getOrders } from '../services/OrderService';
-import OrderCard from '../cart/OrderCard';
-
+import Layout from '../layout/layout';
+import OrderCard from '../cart/OrderCard'; // Assuming OrderCard is in ../cart/OrderCard
 
 const MyOrdersPage = () => {
     const [orders, setOrders] = useState([]);
@@ -30,6 +30,7 @@ const MyOrdersPage = () => {
     if (error) return <div className="error-message">{error}</div>;
 
     return (
+        <Layout>
         <div className="orders-container">
             <h1>{hasRole('Admin') ? 'All Orders' : 'My Orders'}</h1>
 
@@ -48,7 +49,8 @@ const MyOrdersPage = () => {
                     ))}
                 </div>
             )}
-        </div>
+            </div>
+        </Layout>
     );
 };
 

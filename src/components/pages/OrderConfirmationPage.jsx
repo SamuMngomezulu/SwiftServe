@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-toastify';
-import '../styles/orderConfirmation.css';
+// Removed: import '../styles/orderConfirmation.css';
 
 const OrderConfirmationPage = () => {
     const { clearCart } = useCart();
@@ -32,30 +32,30 @@ const OrderConfirmationPage = () => {
                     <svg viewBox="0 0 24 24" className="success-icon">
                         <path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z" />
                     </svg>
-                    <h1>Order Confirmed!</h1>
-                    <p className="order-number">Order #{orderID}</p>
+                    <h1>Order Placed Successfully!</h1>
+                    <p className="order-number">Order ID: #{orderID}</p>
                 </div>
 
                 <div className="confirmation-details">
-                    <div className="detail-row">
-                        <span>Total Paid</span>
+                    <div className="detail-item">
+                        <span>Total Amount:</span>
                         <span>R{totalAmount.toFixed(2)}</span>
                     </div>
-                    <div className="detail-row">
-                        <span>Delivery Method</span>
+                    <div className="detail-item">
+                        <span>Delivery Option:</span>
                         <span>{deliveryOption}</span>
                     </div>
-                    <div className="detail-row">
-                        <span>Status</span>
+                    <div className="detail-item">
+                        <span>Status:</span>
                         <span className="status-processing">Processing</span>
                     </div>
                 </div>
 
-                <div className="order-items">
+                <div className="order-items-confirmation"> {/* Class name updated */}
                     <h3>Your Items</h3>
                     <ul>
                         {items.map(item => (
-                            <li key={item.productID} className="order-item">
+                            <li key={item.productID} className="order-item-confirmation"> {/* Class name updated */}
                                 <img src={item.imageURL} alt={item.productName} />
                                 <div>
                                     <h4>{item.productName}</h4>

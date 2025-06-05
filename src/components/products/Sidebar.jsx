@@ -1,7 +1,5 @@
-// Sidebar.jsx
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import '../styles/sidebar.css';
 import WalletBalance from '../wallet/WalletBalance';
 
 const Sidebar = () => {
@@ -9,14 +7,13 @@ const Sidebar = () => {
     const location = useLocation();
 
     const isActive = (path) => {
-        return location.pathname === path ? 'active' : '';
+        return location.pathname.startsWith(path) ? 'active' : '';
     };
 
     const handleLogout = (e) => {
         e.preventDefault();
         logout();
     };
-
 
     return (
         <aside className="sidebar">
@@ -40,15 +37,15 @@ const Sidebar = () => {
                             <li className={isActive('/order-management')}>
                                 <Link to="/order-management">Order Management</Link>
                             </li>
-                            <li className={isActive('/user-management')}>
-                                <Link to="/user-management">User Management</Link>
-                            </li>
-                            <li className={isActive('/category-management')}>
-                                <Link to="/category-management">Category Management</Link>
-                            </li>
+                            {hasRole(ROLE_KEYS.SUPER_USER) && (
+                                <li className={isActive('/users')}>
+                                    <Link to="/users">User Management</Link>
+                                </li>
+                            )}
                         </>
                     )}
 
+                    {/* Regular user routes */}
                     {(hasRole(ROLE_KEYS.USER) || hasRole(ROLE_KEYS.SUPER_USER) || hasRole(ROLE_KEYS.ADMIN)) && (
                         <>
                             <li className={isActive('/my-orders')}>
@@ -62,8 +59,6 @@ const Sidebar = () => {
                             </li>
                         </>
                     )}
-
-
                 </ul>
             </nav>
 

@@ -1,10 +1,22 @@
-/* Wallet Container - Updated to match design system */
-.wallet-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 var(--space-unit);
+:root {
+    --max-width: 1200px;
+    --header-font-size: 2rem;
+    --balance-font-size: 1.5rem;
+    --tab-padding: 0.75rem 1.5rem;
+    --badge-radius: 12px;
+    --badge-font-size: 0.85rem;
+    --btn-radius: 0.5rem;
 }
 
+/* Wallet Container */
+.walletContainer {
+    max-width: var(--max-width);
+    margin: 2rem auto;
+    padding-inline: var(--space-unit);
+}
+
+
+/* Header */
 .wallet-header {
     display: flex;
     justify-content: space-between;
@@ -12,14 +24,17 @@
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
     .wallet-header h1 {
-        font-size: 2rem;
+        font-size: var(--header-font-size);
         color: var(--font-color);
         margin: 0;
     }
 
+/* Balance */
 .balance-display {
     display: flex;
     align-items: center;
@@ -28,7 +43,7 @@
 }
 
 .balance-amount {
-    font-size: 1.5rem;
+    font-size: var(--balance-font-size);
     font-weight: 600;
     color: var(--accent-color);
 }
@@ -40,10 +55,11 @@
     margin-bottom: 1.5rem;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .tab {
-    padding: 0.75rem 1.5rem;
+    padding: var(--tab-padding);
     background: none;
     border: none;
     border-radius: var(--border-radius);
@@ -70,21 +86,22 @@
     box-shadow: var(--box-shadow);
 }
 
-.table-header {
+.table-header,
+.transaction-row {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-    background-color: var(--gray-light);
+    align-items: center;
     padding: 1rem;
+}
+
+.table-header {
+    background-color: var(--gray-light);
     font-weight: 600;
     color: var(--text-muted);
 }
 
 .transaction-row {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
-    padding: 1rem;
     border-bottom: 1px solid var(--border-color);
-    align-items: center;
     transition: var(--transition);
 }
 
@@ -97,37 +114,25 @@
 }
 
 /* Badges */
-.type-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 500;
-}
-
-    .type-badge.deposit {
-        background-color: var(--success-bg);
-        color: var(--accent-hover);
-    }
-
-    .type-badge.purchase {
-        background-color: #fff3cd; /* Keeping original as not in variables */
-        color: #856404;
-    }
-
+.type-badge,
 .status-badge {
     padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-size: 0.85rem;
+    border-radius: var(--badge-radius);
+    font-size: var(--badge-font-size);
     font-weight: 500;
+    display: inline-block;
+    white-space: nowrap;
 }
 
+    .type-badge.deposit,
     .status-badge.completed {
         background-color: var(--success-bg);
         color: var(--accent-hover);
     }
 
+    .type-badge.purchase,
     .status-badge.pending {
-        background-color: #fff3cd; /* Keeping original as not in variables */
+        background-color: #fff3cd;
         color: #856404;
     }
 
@@ -149,13 +154,13 @@
         color: var(--danger-color);
     }
 
-/* Buttons */
+/* Button */
 .details-btn {
     padding: 0.5rem 1rem;
-    background-color: #3498db; /* Keeping original blue */
+    background-color: #3498db;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--btn-radius);
     cursor: pointer;
     font-size: 0.85rem;
     transition: var(--transition);
@@ -179,9 +184,9 @@
     width: 40px;
     height: 40px;
     border: 4px solid rgba(0, 0, 0, 0.1);
-    border-radius: 50%;
     border-top-color: var(--accent-color);
-    animation: spin 1s ease-in-out infinite;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
@@ -199,7 +204,7 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .table-header,
     .transaction-row {
         grid-template-columns: 1.5fr 1fr 1fr 1fr;
@@ -209,10 +214,19 @@
         .transaction-row div:nth-child(5) {
             display: none;
         }
+}
 
+@media (max-width: 600px) {
     .wallet-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 1rem;
+    }
+
+    .tabs {
+        flex-direction: column;
+    }
+
+    .tab {
+        width: 100%;
     }
 }
